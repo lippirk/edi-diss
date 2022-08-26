@@ -21,6 +21,7 @@
 \sisetup{output-exponent-marker=\ensuremath{\mathrm{e}}}
 
 %headers
+\newcommand{\citeay}[1]{\citeauthor{#1},~\citeyear{#1}}
 \newcommand{\eps}{\varepsilon}
 \newcommand{\code}[1]{\mintinline{text}{#1}}
 \let\oldvec=\vec{}
@@ -161,7 +162,7 @@ predictive distributions for imbalance price residuals.
 \end{center}
 
 Thank you to Ioannis, for the many hours spent explaining some of the finer
-details of the statistics of extremes, and of statistic and probability in
+details of the statistics of extremes, and of statistics and probability in
 general. I left every meeting with fresh problems, new ideas to try, and of course a
 thick wad of paper covered head to toe with scribbles.
 
@@ -198,13 +199,13 @@ I declare that the following work is my own, except where otherwise stated.
 \chapter*{Notation}
 
 \subsection*{Mathematical}
-\begin{tabular}{cp{\textwidth}}
+\begin{tabular}{lp{\textwidth}}
   $\reals_{+}$ & $\{x\in\reals\,|\,x > 0\}$ \\
   $\mathcal{S}_K$ & $\left\{x\in\reals^K\,\middle |\, x \geq 0,\,\sum_{k=1}^K x_k = 1\right\}$, the $K-1$ dimensional simplex \\
   $(x)_+$ & $\max\{x, 0\}$ \\
-  $x_{\{i_1,\,\ldots,\,i_m\}}$, where $x\in\reals^d$ & $(x_{i_1},\,\ldots,\,x_{i_m})\in\reals^m$ \\
-  $x_{\{i_1,\,\ldots,\,i_{m}\},\,\ldots,\,\{j_{1},\,\ldots,\,j_{m'}\}}$ & $(x_{i_1},\,\ldots,\,x_{i_m},\,\ldots,\,x_{j_{1}},\,\ldots,\,x_{j_{m'}})\in\reals^m$ \\
-  $x_{/i}$, where $x\in\reals^d$ & $(x_1,\,\ldots,\,x_{i-1},\,x_{i+1},\,\ldots,\,x_d)\in\reals^{d-1}$ \\
+  $x_{\{i_1,\,\ldots,\,i_m\}}$, where $x\in\reals^d$ & $(x_{i_1},\,\ldots,\,x_{i_m})$ \\
+  $x_{\{i_1,\,\ldots,\,i_{m}\},\,\ldots,\,\{j_{1},\,\ldots,\,j_{m'}\}}$ & $(x_{i_1},\,\ldots,\,x_{i_m},\,\ldots,\,x_{j_{1}},\,\ldots,\,x_{j_{m'}})$ \\
+  $x_{/i}$, where $x\in\reals^d$ & $(x_1,\,\ldots,\,x_{i-1},\,x_{i+1},\,\ldots,\,x_d)$ \\
   $\text{sigmoid}(x)$ & $[1 + \exp(-x)]^{-1}$ \\
   $\text{logit}(x)$ & $\log\left[x/(1-x)\right]$ \\
   $X_{1:t}$ & $\{X_1,\,\ldots,\,X_t\}$ \\
@@ -216,7 +217,16 @@ I declare that the following work is my own, except where otherwise stated.
   $F_{2|1,0}(x;x_1,x_0)$ & $\prob(X_2 \leq x\,|\,X_1=x_1,\, X_0= x_0)$\\
 \end{tabular}\\
 \subsection*{Nomenclature}
-\begin{tabular}{cp{\textwidth}}
+\begin{tabular}{lp{\textwidth}}
+  LHS & Left hand side \\
+  RHS & Right hand side \\
+  CDF & Cumulative distribution function \\
+  ECDF & Empirical cumulative distribution function \\
+  MCMC & Markov chain Monte Carlo \\
+  MISE & Mean integrated square error \\
+  MIAE & Mean integrated absolute error \\
+  i.i.d.\ & Independent and identically distributed \\
+  r.v.\ & Random variable \\
   EVT & Extreme value theory \\
   GPD & Generalized Pareto distribution \\
   CEVMM & Conditional extreme value mixture model
@@ -246,6 +256,7 @@ I declare that the following work is my own, except where otherwise stated.
 
 
 %\nocite{*}
+%\bibliographystyle{apa}
 \bibliographystyle{plainnat}
 \cleardoublepage % always start a new chapter on an odd page
 
@@ -262,23 +273,22 @@ the environmental sciences~\citep{katz1999extreme,towler2010modeling}.
 
 In this dissertation, we are interested in the methodologies that
 can be derived from EVT. In particular, we look at the development and application of an EM
-algorithm for conditional extreme value mixture models (CEVMM) to multivariate
-data. CEVMMs are a statistical construct, and
+algorithm for conditional extremes  of multivariate
+data. Conditional extreme value mixture models (CEVMMs) are a statistical construct, and
 require only a fairly mild assumption about the distribution $F$ that generates
 the data being modelled. If a random $d$-vector $X$ is
 distributed according to $F$, then we assume that
-
 \[
-  \prob\left(\frac{X_{/j} - b(x)}{a(x)} \leq z\,\middle|\,X_j = x\right)\rightarrow G(z) \text{ as } x\rightarrow\infty
+  \prob\left(\frac{X_{/j} - b(x)}{a(x)} \leq z\,\middle|\,X_j = x\right)\rightarrow G(z) \text{ as } x\rightarrow\infty,
 \]
 where $G$ is a non-degenerate probability distribution. This assumption
 originates from the seminal paper by~\cite{heffernan2004conditional}, where a
-methodology was developed for modelling the unknowns $G$, $a$ and $b$. The
+methodology was developed for modelling the unknowns $G$, $a$ and $b$. Their
 methodology has been extended and improved since
-then~\citep{keef2013estimation}. The methodology
+then~\citep{keef2013estimation}. The methodology is
 semi-parametric, in that parametric assumptions are made in order to find
 estimates of the functions $a$ and $b$, and then nonparametric methods are used
-to estimate to model $G$. There is a subtle complication in that the functions
+to model $G$. There is a subtle complication in that the functions
 $a$ and $b$ are not necessarily unique, but this naturally leads to use
 of mixture models where each mixture component accounts for a unique combination
 of the functions $a$ and $b$. CEVMMs are based on this mixture model assumption.
@@ -287,24 +297,26 @@ In what is believed to be a novel development, we apply these mixture models to
 univariate stationary time series $\{X_t\}_{t\in \{1,\,\ldots,\,n\}}$. We do
 this by first viewing the time series as a set of consecutive pairs $\D' =
 \{(X_{t},X_{t+1})\,|\,t\in\{1,\,\ldots,\,n-1\}\}$. Then, assuming that
-$\D\subset \D'$, the set of pairs where the first element is large, is a sample
-of i.i.d.\ draws from the same distribution, a CEVMM model can be fit, and
-therefore to to characterize the tail switching properties of $X_t$.
+the subset of pairs where the first element is large is a sample
+of i.i.d.\ draws from the same distribution, a CEVMM model can be fit
+to characterize the tail switching properties of $X_t$.
 Although an i.i.d.\ assumption is unreasonable in general, it is more palatable
 here since if $n$ is large enough, other dependent variables will in effect be
 integrated out.
 
-The structure of this dissertation involves a brief overview of EVT and two of
-its important results, and then an explanation of the origins of the crucial
-assumption and methods developed in~\cite{heffernan2004conditional}. The
-concept of tail switching is also introduced. We show how CEVMMs can be fitted
-on simulated asymmetric logistic data viewed as a Markov chain, and illustrate
+The structure of this dissertation proceeds as follows. In
+Section~\ref{sec:background} a brief overview of EVT and two of
+its important results are given,
+as well as an explanation of the origins of the crucial
+assumptions and methods developed in~\cite{heffernan2004conditional}. The
+concept of tail switching is also introduced. Next, in Section~\ref{sec:methods}, we show how CEVMMs can be fitted
+on simulated asymmetric logistic data viewed as a Markov chain, and we illustrate
 how uncertainty can be quantified. With the knowledge gained from working with
 simulated data, we apply CEVMMs to electricity imbalance price residuals.
 We show that CEVMMs are able to capture conditional extremal dependence of these
 residuals, and also offer convincing predictive distributions for
 the next residual.
-Finally, the results are summarised and suggestions for future work are put forward.
+Finally, in Section~\ref{sec:conclusion}, the results are summarised and suggestions for future work are put forward.
 
 %CEVMMs are an unfortunate consequence of the fact that
 %Extreme value theory (EVT) and CEVMMs exist because there is a
@@ -322,7 +334,7 @@ Finally, the results are summarised and suggestions for future work are put forw
 
 
 
-\cleardoublepage % always start a new chapter on an odd page
+\clearpage % always start a new chapter on an odd page
 
 
 \chapter{Background}
@@ -332,106 +344,93 @@ Finally, the results are summarised and suggestions for future work are put forw
 \section{Univariate extremes}
 
 Crucial components of EVT are the
-Fisher-Tippet-Gnedenko theorem~\citep{coles2001introduction}, and the closely
+Fisher-Tippet-Gnedenko Theorem~\citep{coles2001introduction}, and the closely
 related Pickands-Balkema-de Haan
-theorem \citep{balkema1974residual,pickands1975statistical}. These
+Theorem \citep{balkema1974residual,pickands1975statistical}. These
 asymptotic results give justification for extrapolating beyond data
-in a principled way. This can be
+in a principled way, first pioneered in~\cite{davison1990models}. This can be
 very powerful, and we approach the subject with this as our goal.
 
-\begin{Theorem}{(Pickands–Balkema–de Haan)}
+\begin{Theorem}\normalfont{(Pickands–Balkema–de Haan)}
   \label{thm:pbdhtheorem}\\
   Let $X$ be an r.v.\ with cumulative distribution $F$.
-  Then if there exist $a(u) \in \mathbb{R}^{>0}$, $b(u)\in\mathbb{R}$,
+  Then if there exist $a(u) \in \mathbb{R}_{+}$, $b(u)\in\mathbb{R}$,
   and $G$ non-degenerate such that
   \[
-    \mathbb{P}\left(\frac{X - b(u)}{a(u)}\leq z + u\,\middle|\,X>u\right)\rightarrow G(z)
-    \text{ as }{u\rightarrow \infty}
+    \mathbb{P}\left(\frac{X - b(u)}{a(u)}\leq z\,\middle|\,X>u\right)\rightarrow G(z)
+    \text{ as }{u\rightarrow \infty},
   \]
   then $G$ is a Generalized Pareto Distribution (GPD) function parameterized
   by $\xi \in \reals$ such that
   \[
-    G(z) = G(z;\xi)= 1 - \left(1 + \xi z\right)_{+}^{-1/\xi}.
+    G(z) = G(z;\xi)= 1 - \left(1 + \xi z\right)_{+}^{-1/\xi}.\\
   \]
-
 \end{Theorem}
 
-This theorem
+Theorem~\ref{thm:pbdhtheorem}
 allows for a natural application in distribution estimation. Given
-some $\{X_i\}_{i=1}^n$ assumed to be i.i.d.\ drawn from an unknown distribution
-$F$, Theorem~\ref{thm:pbdhtheorem} motivates a method for estimating $F$ in
-its upper tail with a GPD distribution $G$:
-
-
+$\{X_i\}_{i=1}^n$ that are assumed to be i.i.d.\ drawn from an unknown distribution
+$F$, Theorem~\ref{thm:pbdhtheorem} motivates the following method for estimating $F$ in
+its upper tail with a GPD distribution $G$
 \begin{equation}\label{eq:fhat_univariate}
   \hat F(z) = G((z - \hat b)/\hat a\,;\, \hat\xi)  \text{ for } z > v.\\
-  \end{equation}
-    %\begin{split}
-  %\hat F(z) = \begin{cases}
-    %\hat F_{\text{ecdf}}(z) & \text{ if } z \leq v\\
-  %\end{cases}
-%\end{split}
-The parameters $a$,$b$, $\sigma$ and $\xi$ can be fit via some statistical procedure,
-maximum likelihood for example, on a set of exceedances $\{X_i\,|\, X_i > v,\,i\in\{1,\,\ldots,\,n\}\}$.
-A more standard estimator can be used to estimate $F(z)$ for $z < v$, such as
-the empirical CDF.
+\end{equation}
+The parameters $a$, $b$, $\sigma$ and $\xi$ can be fit via some statistical
+procedure (e.g.\ maximum likelihood) on a set of exceedances $\{X_i\,|\, X_i >
+v,\,i\in\{1,\,\ldots,\,n\}\}$. A more standard estimator can be used to
+estimate $F(z)$ for $z < v$, such as
+the ECDF.
 Finding a suitable $v$ can be troublesome
 as its selection corresponds to a bias-variance trade-off~\citep{coles2001introduction}.
 However, given a sufficient amount of data it is generally possible to
 fit such a model and therefore allow for extrapolation in the tails.
 Relatively mature software packages exist for fitting these models and quantifying confidence
-intervals, see for example~\cite{mev}, so analyses of this kind should be considered
+intervals (see for example~\citeay{mev}), so analyses of this kind should be considered
 approachable.
-
-
 
 \section{Multivariate extremes}
 
 In the univariate case, we have univariate extreme value distributions,
 which give rise to the useful Pickands-Balkema-de Haan Theorem~(\ref{thm:pbdhtheorem}).
-In the multivariate case, we have the following result about
-multivariate extreme value distributions, stated assuming Fréchet margins
-(restricting to Fréchet margins is not limiting, since we can
-transform data to/from any margin via $ Q \circ \hat F_{\text{ecdf}}$, where $Q$ is a
-quantile function).
+In the multivariate case, we have the following Theorem~\ref{thm:mvextypes} concerning
+multivariate extreme value distributions, stated assuming Fréchet margins.
+Restricting to Fréchet margins is not limiting, since we can
+transform data to/from any margin via $ Q \circ \hat F$, where $Q$ is the relevant
+quantile function.
 
-
-\begin{Theorem}{(Multivariate Extremal Types)}\label{thm:mvextypes}\\
+\begin{Theorem}\normalfont{(Multivariate Extremal Types)}\label{thm:mvextypes}\\
   Let $\{X^i\}_{i=1}^n=\{(X^i_1,\,\ldots,\,X^i_d)\}_{i=1}^n$ be independent
   random $d$-vectors with unit Fréchet marginals. Let $M^n\in \mathbb{R}^d$ be
   the vector of component-wise maxima, so that $M^n_j = \max_{i=1}^n
-  X^i_j$.\\
-
-  Take the following vector additions, multiplications to be component-wise,
-  and read $a<b,\,a,b\in\mathbb{R}^d$ to mean that $a_i < b_i,\,\forall
+  X^i_j$.
+  Take the following vector additions, multiplications, etc.\ to be component-wise,
+  and read $a<b,\,a,\,b\in\mathbb{R}^d$ to mean that $a_i < b_i,\,\forall
   i\in\{1,\ldots,\,d\}$.
   Suppose there exist $a_n \in \mathbb{R}_{+}^d$, $b_n\in\mathbb{R}^d$ and
   non-degenerate $G$ such that
   \[
     \mathbb{P}\left(\frac{M^n - b_n}{a_n}\leq z\right)\rightarrow G(z) \text{ as } {n\rightarrow \infty}.
   \]
-
   Then for any pair of norms $\norm{\cdot}_1$, $\norm{\cdot}_2$ on $\reals^d$, $G$ can be
-  written in the following form:
+  written in the following form
   \[
   \begin{aligned}
-    G(z) &= \exp\left[-V(z)\right]\\
-    V(z) &= \int_{\Xi} \max_{j\in\{1,\,\ldots,\,d\}}\left\{\frac{\omega_j}{\norm{\omega}_1}\frac{1}{z_j}\right\} S(\md \omega)\\
+    G(z) &= \exp\left[-V(z)\right],\\
+    V(z) &= \int_{\Xi} \max_{j\in\{1,\,\ldots,\,d\}}\left\{\frac{\omega_j}{\norm{\omega}_1}\frac{1}{z_j}\right\} S(\md \omega),\\
   \end{aligned}
   \]
-
   where $\Xi = \{\omega\in\reals^d : \norm{\omega}_2 = 1,\,\omega \geq 0\}$ and
   $S$ is a measure over the Borel sets $\mathcal{B}(\Xi)$ satisfying
   $\int_{\Xi}\omega_j/\norm{\omega}_1 S(\md \omega)=1$ for all
-  $j\in\{1,\ldots,\,d\}$.
+  $j\in\{1,\ldots,\,d\}$.\\
 \end{Theorem}
 
-If it were possible to establish $V$ as well as the normalizing constants
-$a_n$, $b_n$ for some multivariate
+If it were possible to establish $V$ in Theorem~\ref{thm:mvextypes}, as well as
+the normalizing constants $a_n$, $b_n$ for some multivariate
 data, then
 in principle it should be possible to form a multivariate equivalent
-of the distribution estimator in~\eqref{eq:fhat_univariate} for large $n$
-by approximating $F$ in the following way.
+of the distribution estimator in~\eqref{eq:fhat_univariate} for large $n$,
+by approximating $F$  as follows
 \[
   \begin{aligned}
   \prob((M^n -  b_n)/ a_n\leq  z) &\approx \exp\left[-V( z)\right]\\
@@ -439,21 +438,8 @@ by approximating $F$ in the following way.
     \implies F(  z ) &\approx \exp\left[-\frac{1}{n}V\left(\frac{z - b_n}{a_n} \right)\right].\\
   \end{aligned}
 \]
-
-%Now suppose we have some `extreme point' $\vec u$ such that $F(\vec u)$ is close to 1,
-%then $-\log F(\vec u) \approx 1 - F(\vec u)$ by Taylor expansion.
-%Therefore for $\vec z > 0$
-
-%\[
-  %\begin{aligned}
-    %\prob(\vec X_i > \vec z + \vec u \big | \vec X_i > \vec u) &= \frac{\prob(\vec X_i > \vec z + \vec u)}{\prob(\vec X_i > \vec u)}\\
-     %&= \frac{1 - F(\vec z + \vec u)}{1 - F(\vec u)}\\
-     %&\approx \frac{V((\vec z + \vec u - \vec b_n)/\vec a_n)}{V((\vec u - \vec b_n) / \vec a_n)}.\\
-  %\end{aligned}
-%\]
-
-Notice however that $V$ is characterized by a measure $S$, which makes
-inference very difficult (despite the equality constraints).
+Notice, however, that $V$ is characterized by a measure $S$, which makes
+inference very difficult.
 Parametric models~\citep{tawn1990modelling}
 as well as nonparametric models~\citep{marcon2017multivariate}
 for $V$
@@ -467,23 +453,21 @@ the tails.
 
 Suppose we have $n$ i.i.d.\ random $d$-vectors
 $\{X^i\}_{i=1}^n = \{(X^i_1,\,\ldots,\,X^i_d)\}_{i=1}^n$.
-We drop the $i$ superscript for notational convenience from here. We've
+We drop the $i$ superscript for notational convenience from here. We have
 established that it is difficult to estimate $\prob(X > u + z\,|\,X > u)$
 for some extreme $u$ using the multivariate value distributions from
-Theorem~\ref{thm:mvextypes}. \cite{heffernan2004conditional} proposes an
+Theorem~\ref{thm:mvextypes}. \cite{heffernan2004conditional} propose an
 alternative method for modelling the extremal dependence of multivariate data.
 Instead of considering $\prob(X> u + z\, |\, X > u)$ directly, consider
 $\prob(X_{/j} > u + z\, |\, X_j = x_j)$, for all $j\in \{1,\ldots,d\}$.
 To see why this is worthwhile, note that
 the latter can be used to find the former. For example, in the case $d=2$,
-
 \begin{equation}\label{eq:thresh_to_ht}
-    \prob(X > u + z | X > u)
-    = \frac{\int_{x_1 > u_1+z_1} \prob(X_2 > u_2 + z_2\, |\, X_1 =x_1)f_{1}(x_1)\md x_{1}}{1-F_2(u_2)},
+    \prob(X > u + z\,|\,X > u)
+  = \frac{1}{1-F_2(u_2)}\int_{x_1 > u_1+z_1} \prob(X_2 > u_2 + z_2\, |\, X_1 =x_1)f_{1}(x_1)\md x_{1},
   \end{equation}
-
-where $F_2$ is the distribution of the second margin and $f_1$ is the density
-the first margin. Assuming we have a model for $\prob(X_2 > u_2 + z_2\, |\, X_1 = x_1)$, then the
+where $F_2$ is the distribution of $X_2$ and $f_1$ is the density
+of $X_1$. Assuming we have a model for $\prob(X_2 > u_2 + z_2\, |\, X_1 = x_1)$, then the
 RHS of~\eqref{eq:thresh_to_ht} can be used to estimate the LHS. Whilst
 the denominator is also unknown, we can estimate it
 using univariate results such as~\eqref{eq:fhat_univariate}, or with a simple
@@ -492,127 +476,52 @@ the integral is intractable, but can be estimated using Monte Carlo methods.
 All that remains is an approach to modelling such quantities as
 $\prob(X_{/j}> u + z |X_j = x)$. We assume that there exist
 normalizing constants $a(x)>0$, $b(x)$, and some non-degenerate $G$ such that
-
 \begin{equation}
   \label{eq:htassump}
   \prob(X_{/j} - b(x))/a(x)\leq z \,|\,X_j = x)\rightarrow G(z) \text{ as } {x\rightarrow\infty}.
 \end{equation}
-
 This suggests that the following approximation is appropriate
-
 \begin{equation}
   \label{eq:basichtapprox}
 \prob\left(X_{/j}\leq y\middle| X_{j} = x\right)\approx
 G\left(\frac{y - b(x)}{a(x)}\right),
 \end{equation}
-
-and indeed this is what Heffernan and Tawn
+and indeed this is what~\cite{heffernan2004conditional}
 studied. In practice,
 the functions $a$ and $b$ are not necessarily unique, and there can
 be several combinations of functions that yield non-degenerate limits in~\eqref{eq:htassump}.
 This has been explored
 by~\cite{tendijck2021modeling}, and
-we can make~\eqref{eq:basichtapprox} more general with the following approximation.
-
-
-
-%However~\eqref{eq:basichtapprox} is not quite enough,
-%since
-
-
-%It is necessary to consider $\lim_{z\ra \pm\infty}G(z)$
-%in~\eqref{eq:htassump}. Firstly, we must ensure that $\lim_{z\ra +\infty}G(z) =
-%1$ (in other words $G$ places no mass at $z=\infty$), since otherwise $a$ and
-%$b$ are unidentifiable\cite{keef2013estimation}. Mass at $-\infty$ is
-%allowed, but then the approximation~\eqref{eq:basichtapprox} does not make
-%sense in practice since $\hat G$ would not be a probability distribution
-%function. To make approximation~\eqref{eq:basichtapprox} more sensible, we must
-%capture all the `modes' --- intuitively this means that
-%there can be several combinations of normalizing functions that satisfy
-%~\eqref{eq:htassump}. This has been explored
+we can make~\eqref{eq:basichtapprox} more general with the following approximation
 \begin{equation}\label{eq:modalhtapprox}
   \prob\left(X_{/j}\leq y\middle| X_{j} = x\right)
   \approx \sum_{k=1}^K \pi_k G_k\left(\frac{y - b_k(x)}{a_k(x)}\right)
 \text{ for large }x,
 \text{ with }(\pi_1,\,\ldots,\,\pi_K)\in \mathcal{S}_{K},
 \end{equation}
-
 where $K$ is the number of `modes' (equivalently the number of unique
 combinations of suitable normalization functions), and $\mathcal{S}_K$ is the
 probability simplex with dimension $K-1$. We will focus
-heavily on fitting models of kind~\eqref{eq:modalhtapprox}.\\
-
-%\subsection{Extremal modes}
-%To get an intuition about what these modes look like graphically, see
-%Figure~\ref{fig:ar1eg} and Figure~\ref{fig:eth_mode}.
-%All data has been converted to Laplace margins, to allow for easy comparison.
-
-%After generating data $\{X_t\}_{t=1}^{5000}$ from an AR(1) process,
-%we show the extremal
-%dependence between successive values in the series in
-%Figure~\ref{fig:ar1eg}. The dependence is positive, and we can see
-%only one mode (corresponding to $K=1$ in~\eqref{eq:modalhtapprox}).
-
-%%\footnote{This process is given by $X_{t+1} =  \alpha X_t + \epsilon_t$,
-  %%where $\epsilon_t \sim_{\text{iid}} N(0, 1),\,\alpha=0.9$. The expected
-  %%(theoretical) RHS of~\eqref{eq:basichtapprox} is therefore $\phi(y-\alpha x)$,
-  %%where $\phi$ is the standard Normal pdf. The AR(1) model is special because
-  %%approximation~\eqref{eq:basichtapprox} is valid regardless of
-  %%the choice of threshold $u$.
-%%}.  There
-%%is positive dependences between the components of $\vec Y$, and there would
-%%be a single mode, i.e. $K=1$ in~\eqref{eq:modalhtapprox}.
-
-
-%Figure~\ref{fig:eth_mode} shows extremal dependence in Ethereum cryptocurrency
-%daily returns. Here the multivariate data is again $\vec Y_t =(X_{t+1},X_{t})$,
-%but with $X_t$ now the Ethereum opening price return on day $t$. $K=3$
-%suggested modes are shown, but an argument could perhaps be made for $K=2$ or
-%$K=3$.
-
-%The modes are determined by the functions $a_k(x)$ and $b_k(x)$ in~
-%\eqref{eq:modalhtapprox}, and need not be straight lines as depicted in
-%Figure~\ref{fig:eth_mode} (indeed this will only be the case if $a(x) =
-%\text{const}$ and $b(x) = \text{const}$).
-
-%\begin{figure}[!htp]
-  %\centering
-  %\includegraphics[scale=0.75]{../ar/figures/ar1_ht_eg.pdf}
-  %\caption{$X_{t+1}$ vs.\ $X_t$ for $X_t > F_{\text{Laplace}}^{-1}(0.9)$, where $X_t$ has been generated by an AR process with parameter $\alpha=0.9$ and standard normal noise, and then transformed to Laplace margins.}\label{fig:ar1eg}
-%\end{figure}
-
-%\begin{figure}[!htp]
-  %\centering
-  %\includegraphics[scale=0.75]{../mode-example/figures/ethereum_modes.pdf}
-  %\caption{Consecutive Ethereum cryptocurrency price returns for 2015-08-07 to
-  %2022-08-07, with suggested modes. Prices were obtained from
-%\href{https://ethereumprice.org}{https://ethereumprice.org}; here $X_t = (o_{t} -o_{t-1})/o_{t-1}$, is the return on the $t$th day, with $o_t$ being the open price on day $t$.}\label{fig:eth_mode}
-%\end{figure}
+heavily on fitting models of kind~\eqref{eq:modalhtapprox}.
 
 \FloatBarrier
 
 \section{Fitting conditional extreme value mixture models (CEVMMs)}
 
-If all of $K$, $a_k(x)$, $b_k(x)$ and $G_k$, for $k=1,\ldots,K$, are known
+If all of $K$, $a_k$, $b_k$ and $G_k$, for $k=1,\ldots,K$, are known
 then
 fitting the model~\eqref{eq:modalhtapprox} is straightforward because
 the RHS becomes a simple mixture model of known distributions.
-Algorithmic options for fitting the mixture weights include:
-
+Algorithmic options for fitting the mixture weights include
 \begin{enumerate}[(a)]
-  \item EM. There are
+  \item EM --- there are
     closed form solutions to the parameter updates for $\pi$, and EM is known
     to converge
     to the MLE for $\pi$~\citep{redner1984mixture};
-  \item Bayesian methods. A Dirichlet prior for $\pi$ yields
+  \item Bayesian methods --- a Dirichlet prior for $\pi$ yields
     closed form updates in a Gibbs sampler~\citep{li2019tutorial} because
     it is a conjugate prior for the Multinomial distribution.
 \end{enumerate}
-%\footnote{As
-  %in\cite{tendijck2021modeling}, it may be effective to fit models with a
-  %varying number of $K$ modes, and chose the best one via some model selection
-%procedure such as DIC or BIC.}
-
 Unfortunately in practice, given real data, none of the parameters or
 distributions will be
 known. We will not even know the number of modes. There is a history of workarounds for this issue.
@@ -626,22 +535,18 @@ was suggested in~\cite{keef2013estimation}.
 Using Laplace margins instead yields $a(x) = x^\beta$ and $b(x) = \alpha x$
 for a large class of copula.
 Laplace margins have a further advantage over Gumbel margins in that
-an extreme value analysis can be performed in both the lower and the upper tails
-simultaneously because the Laplace density is symmetric.
-Secondly, it has been common to use empirical CDFs in place of the $G$'s.
+an extreme value analysis can be performed easily in both the lower and the upper tails
+because the Laplace density is symmetric.
+Secondly, it has been common to use ECDF in place of the $G_k$'s.
 It is not possible to fit $\alpha$'s, $\beta$'s and $\pi$ under this
 assumption, and so classically for the fitting step a false working assumption
 that the $G$'s are normally distributed has been used. It is stressed that once
 estimates for the mixture weights and the normalization constants are found,
 the normal assumption is dropped. Putting these workarounds together yields the
-following model for the fitting step:
-
-
+following model for the fitting step
 \begin{equation}\label{eq:ht_mix_fitting_step}
-  \prob\left(X_{l}\leq y\middle| X_{j} = x\right) = \sum_{k=1}^K \pi_k \Phi\left(\frac{y - \alpha_k x}{x^{\beta_k}}\,;\,\mu_k,\sigma_k^2\right) \text{ for large } x,\, l\in\{1,\,\ldots,\,d\},\,l\neq j
+  \prob\left(X_{l}\leq y\middle| X_{j} = x\right) = \sum_{k=1}^K \pi_k \Phi\left(\frac{y - \alpha_k x}{x^{\beta_k}}\,;\,\mu_k,\sigma_k^2\right) \text{ for large } x,\, l\in\{1,\,\ldots,\,d\},\,l\neq j,
 \end{equation}
-
-
 where $\Phi$ is the univariate normal CDF. For the $d=2$ case,
 fitting~\eqref{eq:ht_mix_fitting_step} requires data $\D' =
 \{(x_i,y_i)\}_{i=1}^n$, where $(x_i , y_i)$ are assumed to be i.i.d.. It is
@@ -653,17 +558,15 @@ found, let $C_i\in\{1,\,\ldots,\,K\}$ be the classification of each pair
 $(x_i,y_i)\in\D$. By sampling $C_i$ many times, we can construct sets of
 residuals $Z_1,\,\ldots,\,Z_K$, where $(y_i - \alpha_k x_i)/x_i^{\beta_k}$ is
 added to $Z_k$ every time $k$ is sampled from $C_i$. Finally, we can drop the
-normal assumption and construct empirical CDFs for each of these sets of
-residuals, yielding the final model:
-
+normal assumption and construct ECDFs for each of these sets of
+residuals, yielding the final model
 \begin{equation}\label{eq:ht_mix_final}
 \prob\left(X_{l}\leq y\,\middle|\, X_j = x\right) \approx
 \sum_{k=1}^K\hat\pi_k \hat F^k_{\text{ecdf}}\left(\frac{y - \hat\alpha_k
 x}{x^{\hat\beta_k}}\right) \text{ for large }x.
 \end{equation}
-
 The business of fitting model~\eqref{eq:ht_mix_fitting_step} is not simple ---
-even though it is a mixture of Gasussians, it is not amenable to techniques for
+even though it is a mixture of Gaussians, it is not amenable to techniques for
 fitting Gaussian mixture models because the CDFs permit an argument that
 is non-linear in the data $x$.
 No closed form solution exists (nor are there a closed form solutions to
@@ -676,40 +579,33 @@ the~\hyperref[appendix:htnormalem]{appendix}.
 
 We briefly introduce the concept of tail switching, and discuss its relevance in
 terms of conditional extreme value models.
-We say that a time series $\{X_t\}_{t\in \mathbb{Z}}$, $X_t\in\reals$ tail
+We say that a time series $\{X_t\}_{t\in \mathbb{Z}}$ tail
 switches if
 for some fixed large threshold $u$,
 $X_{t} > u > X_{t+1}$. In other words, a series tail switches if it moves from
 the upper tail of its distribution to the main body. It is necessary to assume
 some degree of stationarity for
-$X_t$, as otherwise $u$ would need to vary with $t$.
+$X_t$, as otherwise $u$ may need to vary with $t$.
 
-There are many examples of tail switching series in practice.
-See Figure~\ref{fig:sap500ts} which shows several tail switches of S\&P log returns
+There are many examples of tail switching series in practice:
+see Figure~\ref{fig:sap500ts} which shows several tail switches of S\&P log returns
 (on the Laplace scale), along with the actual price.
 The log return transformation is necessary as it serves to residualize the
 data (so that it is stationary).
-
 \begin{figure}[htp]
   \centering
   \includegraphics[scale=0.70]{../tail-switching/figures/spy_tail_switch.pdf}
-  \caption{S\&P 500 price and log returns on a Laplace scale around a financially turbulent period in 2002.
+  \caption{S\&P 500 price and log returns on a Laplace scale, during a financially turbulent period in 2002.
   Tail switches across $u=F_{\text{Laplace}}^{-1}(0.95)$ (dashed line) denoted with $\star$.}\label{fig:sap500ts}
 \end{figure}
 
-%\begin{figure}[htp]
-  %\centering
-  %\includegraphics[scale=0.75]{../tail-switching/figures/btc_tail_switch.pdf}
-  %\caption{BTC price and log returns with tail switches in early 2018. Data collected from Binance.}\label{fig:btcts}
-%\end{figure}
-
 Different aspects of tail switching have been
-studied.~\cite{bortot2003extremes} examines in particular not just the
-occurrence of a tail switches, but tail switches from high extremes to lower
-extremes (i.e. $X_t > u > 0 > u' > X_{t+1}$, where $u'$ is small). This
+studied.~\cite{bortot2003extremes} examine in particular not just the
+occurrences of tail switches, but tail switches from high extremes to low
+extremes (i.e.\ $X_t > u > 0 > u' > X_{t+1}$, where $u'$ is small). This
 treatment is useful especially useful for finance, where such switches are
 common. Tail switching has also been explored in a multivariate setting,
-with multivariate Student-$t$ models in~\cite{bernardi2013multivariate}.
+with multivariate Student-$t$ models by~\cite{bernardi2013multivariate}.
 
 Crucially, conditional extreme value models can be applied to time series to
 characterize how they tail switch.
@@ -718,15 +614,12 @@ and the $K>1$ case has been studied in an environmental setting~\citep{tendijck2
 but it is believed that an application of the $K>1$ case in a time series context is novel.
 A model can be fit using~\eqref{eq:ht_mix_final} by constructing a dataset $\D' =
 \{(X_{t}, X_{t+1})\}_{t=1}^n$, and then fitting on $\D = \{(x,y) \in \D' | x > u\}$ for some large $u>0$.
-It is assumed that $\{X_t\}$ is stationary, so that observations in $\D$ are (perhaps approximately) drawn i.i.d.. This assumption is an important ingredient so that model assumptions for met when fitting~\eqref{eq:ht_mix_final}.
+It is assumed that $\{X_t\}$ is stationary, so that observations in $\D$ are (perhaps approximately) drawn i.i.d.. This assumption is an important ingredient so that model assumptions are met when fitting~\eqref{eq:ht_mix_final}.
 
-
-\cleardoublepage
+\clearpage
 
 \chapter{Methods and results}\label{sec:methods}
-
-%As discussed,
-We seek to investigate conditional extreme value mixture models (CEVMMs) in the
+We seek to investigate CEVMMs in the
 context of time series. In order to assess their efficacy, we begin by testing
 them on simulated data. We focus on data simulated from an asymmetric logistic
 distribution. The theoretical relevance of the asymmetric
@@ -754,11 +647,12 @@ in the deseasonalized imbalance price, and demonstrate that
 CEVMM models can be useful for managing risk associated with the extremes of
 these residuals.
 
+All the code written can be found on GitHub, see \url{https://github.com/lippirk/edi-diss}.
+
 \section{The 3-dimensional asymmetric logistic model}\label{sec:asymlog}
 
 The 3-dimensional asymmetric logistic distribution with Fréchet margins is
 defined below via its cumulative distribution function.
-
 \begin{equation}
   \label{eq:3dimasslog}
   \begin{split}
@@ -776,155 +670,118 @@ V(x) &= \theta_0 x_0^{-1} + \theta_1 x_1^{-1} + \theta_2 x_2^{-1}
 0<\theta_0,\theta_1,\theta_2,\theta_{01},\theta_{02},\theta_{12},\theta_{012}.
 \end{split}
 \end{equation}
-
 When referring to `$\theta$' and `$v$' we mean
 $(\theta_0,\theta_1,\theta_2,\theta_{01},\theta_{02},\theta_{12},\theta_{012})$
 and $(v_{01}, v_{12}, v_{012})$ respectively. In terms of notation,
-we will sometimes write $\theta_{/012}$ to mean $(\theta_0,\theta_1,\,\ldots,\theta_{12}$,
-i.e.\ all the $\theta$'s except $\theta_{/012}$.
+we will sometimes write, for example, $\theta_{/012}$ to mean $(\theta_0,\theta_1,\,\ldots,\theta_{12})$,
+i.e.\ all the $\theta$'s except $\theta_{012}$.
 
 The equality constraints on
 $\theta$ ensure that the marginals of $F$ are unit
 Fréchet.
 Rather than working directly with~\eqref{eq:3dimasslog}, we use it to
-construct an order-2 Markov process~\eqref{eq:3dimasslogmarkovprocess}:
-
+construct an order-2 Markov process~\eqref{eq:3dimasslogmarkovprocess}, given by
 \begin{equation}\label{eq:3dimasslogmarkovprocess}
-  X_{0} \sim F_{0},\;
-  X_{1}|X_0=x_0 \sim F_{1|0}(\cdot; x_0),\;
-  X_{t+2}|X_{t+1}=x_{t+1},X_t=x_t \sim F_{2|1,0}(\cdot; x_{t+1}, x_t),
+  \begin{split}
+  &X_{0} \sim F_{0},\\
+  &X_{1}\,|\,X_0=x_0 \sim F_{1|0}(\cdot; x_0),\\
+  &X_{t+2}\,|\,X_{t+1}=x_{t+1},\,X_t=x_t \sim F_{2|1,0}(\cdot; x_{t+1}, x_t),\\
+\end{split}
 \end{equation}
-
 where $F_{1|0}$ and $F_{2|1,0}$ are the conditionals of $F$.
 A stationary process can be specified by imposing the constraint
 $\prob(X_t \leq x,X_{t+1}\leq y) = \prob(X_{t+1} \leq x,X_{t+2}\leq y),\
-\forall x,y>0$, which implies $\theta_{01} = \theta_{12} \text{ and } v_{01} =
+\forall x,\,y>0$, which implies $\theta_{01} = \theta_{12} \text{ and } v_{01} =
 v_{12}$.
 
 Using inverse sampling, it is possible to draw from
-\eqref{eq:3dimasslogmarkovprocess} (code that performs these draws can be found
-on \href{https://github.com/lippirk/edi-diss/asym-log}{GitHub}). Notice how
-decreasing the $v$'s and increasing $\theta_{01},\theta_{02},\theta_{012}$
+\eqref{eq:3dimasslogmarkovprocess}. Notice how
+decreasing the $v$'s and increasing $\theta_{01},\,\theta_{02},\,\theta_{012}$
 increases dependence between the r.v.s $X_{t+2}$, $X_{t+1}$ and $X_{t}$.
-
-
-
-
-%\begin{figure}[htp]
-  %\centering
-  %\includegraphics[scale=0.70]{../asym-log/figures/3dim-basic-realization.pdf}
-  %\caption{Realizations of~\eqref{eq:3dimasslogmarkovprocess} on a log scale,
-    %conditional on $X_0 > u=F^{-1}_{\text{Fréchet}}(0.995)$ (using the same random seed).}\label{fig:3dimmasslogreal1}
-%\end{figure}
-
-
-
-%We will generate data $\{X_t\}$ from this model as follows:
-
-%where $F_0$ is the marginal for the first component (i.e. $F_0(x) =
-%F(x,\infty,\infty)$), $F_{1|0}(x;x_0) = \p(X_1 \leq x|X_0 =x_0)$, and
-%$F_{2|1,0}(x;x_1,x_0) = \p(X_2\leq x|X_1=x_1, X_0 = x_0)$. Derivations for
-%these quantities can be found in the \hyperref[appendix:3dimasslog]{appendix},
 
 \clearpage
 
 \subsection{Theoretical Extremal Dependence}
 
 We are interested in particular in the extremal dependence of
-$X_0,X_1$ and $X_2$. Since we know the conditionals $F_{1|0}$ and
+$X_0,\,X_1$ and $X_2$. Since we know the conditionals $F_{1|0}$ and
 $F_{2|1,0}$ in~\eqref{eq:3dimasslogmarkovprocess}, we can calculate the
 dependence directly. However, we also want the normalization constants
 necessary for limits such as~\eqref{eq:htassump} to exist, as then we
 can compare algorithmic results to what is expected asymptotically.
 These results exist already for $F_{1|0}$ and $F_{2|1,0}$, with $X_i$'s in exponential
-margins~\citep{papastathopoulos2017extreme,https://doi.org/10.48550/arxiv.1903.04059}. By stationarity,
-
+margins~\citep{papastathopoulos2017extreme,https://doi.org/10.48550/arxiv.1903.04059}.
+These are summarised by
 \begin{equation}\label{eq:exp_margin_res}
     \begin{split}
-      \prob(X_1 \leq z | X_0 = x)=\prob(X_2 \leq z | X_1 = x) &\ra_{x\ra\infty} H_1(z),\\
-      \prob(X_2 \leq z | X_0 = x) &\ra_{x\ra\infty} H_2(z),\\
-      \prob(X_2 \leq z | X_0 = x, X_1 = y) &\ra_{x\ra\infty,y\ra\infty} H_3(z),\\
-      \prob(X_1 - x \leq z | X_0 = x) = \prob(X_2 - x \leq z | X_1 = x) &\ra_{x\ra\infty} H_4(z),\\
-      \prob(X_2 - x \leq z | X_0 = x) &\ra_{x\ra\infty} H_5(z)\text{ and }\\
-      \prob(X_2 +v_{012}\log(\exp(-x/v_{012})+\exp(-y/v_{012}))\leq z | X_0 = x,
-      X_1 = y) &\ra_{x\ra\infty,y\ra\infty} H_6(z).\\
+      &\prob(X_2 \leq z | X_1 = x) \ra_{x\ra\infty} H_1(z),\\
+      &\prob(X_2 \leq z | X_0 = x) \ra_{x\ra\infty} H_2(z),\\
+      &\prob(X_2 \leq z | X_0 = x, X_1 = y) \ra_{x\ra\infty,y\ra\infty} H_3(z),\\
+      &\prob(X_2 - x \leq z | X_1 = x) \ra_{x\ra\infty} H_4(z),\\
+      &\prob(X_2 - x \leq z | X_0 = x) \ra_{x\ra\infty} H_5(z)\text{ and }\\
+      &\prob(X_2 +v_{012}\log(\exp(-x/v_{012})+\exp(-y/v_{012}))\leq z | X_0 = x,
+      X_1 = y) \ra_{x\ra\infty,y\ra\infty} H_6(z).
     \end{split}
   \end{equation}
-
-The distributions $H_i$ aren't particularly important for our purposes --- all
+The distributions $H_i$ are not particularly important for our purposes --- all
 that matters here is that they are
 non-degenerate.
-For consistency with the results from~\cite{keef2013estimation} we would ideally work in Laplace margins. Fortunately
+For consistency with the results from~\cite{keef2013estimation}, we would ideally work in Laplace margins. Fortunately
 the results from~\eqref{eq:exp_margin_res} carry over easily from exponential to Laplace
 margins. Note that
-
 \begin{equation}\label{eq:exp_to_lap_res}
     \left(F_{\text{Laplace}}^{-1}\circ F_{\text{exponential}}\right) (x)=
     x - \log 2\text{, whenever $x > \log\,2=F_{\text{exponential}}^{-1}(0.5)$}.\\
   \end{equation}
-
 Equation~\eqref{eq:exp_to_lap_res} implies that the limits associated with $H_1,\ldots,H_6$
 in expression~\eqref{eq:exp_margin_res}
 also hold in Laplace margins. This allows us to construct a CEVMM that
-captures the asymptotic extremal dependence between $X_{t+1}$ and $X_{t}$:
-
+captures the asymptotic extremal dependence between $X_{t+1}$ and $X_{t}$ with
 \begin{equation}\label{eq:asslog_order1}
   \prob\left(X_{t+1}\leq z\middle| X_{t} = x\right) \approx \pi G_1 (z - x) + (1-\pi) G_2\left(z\right)
-  \text{ for large }x,\\
+  \text{ for large }x.
 \end{equation}
-
 We can also construct a CEVMM for the capturing the asymptotic extremal dependence between
-$X_{t},X_{t+1}$ and $X_{t+2}$:
-
+$X_{t},X_{t+1}$ and $X_{t+2}$ with
 \begin{equation}\label{eq:asslog_order2}
   \begin{split}
     \prob\left(X_{t+2}\leq z\middle| X_{t} = x, X_{t+1}=y\right) &\approx
   \pi_{1} G_1 (z) + \pi_{2} G_2\left(z\right) + \pi_{3}G_3\left(z\right)
   +\pi_4 G_4(z - y)
   + \pi_5 G_5(z - x)\\
-    &+ \pi_6 G_6(z + v_{012}\log[\exp(-x/v_{012})+\exp(-y/v_{012})]),\\
+    &+ \pi_6 G_6(z + v_{012}\log[\exp(-x/v_{012})+\exp(-y/v_{012})]),
 \end{split}
 \end{equation}
-
 where $(\pi_{1},\,\ldots,\,\pi_6)\in\mathcal{S}_6$, and at least one of $x$ or $y$
 is large.
 The $G_k$'s in~\eqref{eq:asslog_order2} correspond to the $H_k$'s in~\eqref{eq:exp_margin_res}.
 In general the mixture probabilities $\pi_k$ may depend on $x$ and $y$.
 For example, if both $x$ and $y$ are very large, then we ought to have $\pi_3,\pi_6$
 non zero, with the other mixtures negligible.
-
-
-
 \begin{figure}[htp]
   \centering
   \includegraphics[scale=0.75]{../asym-log/figures/3dim-x2-vs-x1-laplace-scale.pdf}
   \caption{$X_{t+1}$ vs. $X_{t}$, on unit Laplace scale, for
     $\theta_{/012}=0.3$ and
     different values of $v$ (using the same random
-seed). The theoretical modes are shown in yellow.}\label{fig:asslogx2vsx1} \end{figure}
-
-
+seed). The theoretical modes are shown in grey.}\label{fig:asslogx2vsx1} \end{figure}
 Figure~\ref{fig:asslogx2vsx1} depicts realizations of $X_{t+1}$ and $X_{t}$,
-conditional on $X_{t}$ large. The theoretical modes established above are shown
-in yellow. Adopting notation from~\cite{keef2013estimation} for the
+conditional on $X_{t}$ large. Adopting notation from~\cite{keef2013estimation} for the
 normalization functions ($a_k(x) = x^{\beta_k}$, $b_k(x) = \alpha_k x$) they
 are characterized by $(\alpha_1,\beta_1)=(1,0)$ and $(\alpha_2,\beta_2)=(0,0)$,
 and so we see straight lines. We will fit CEVMMs on this data. Notice that
 variance around the modes increases with $v$. This is due to $v$ acting as a
 dependence parameter (high $v$ meaning low dependence and vice versa). It
 follows that fitting CEVMMs will be easier to fit when relevant variables have
-high dependence, and at the opposite extreme CEVMMs will not be a sensible
+high dependence, and at the opposite extreme, CEVMMs will not be a sensible
 model if $v$ is close to 1, since in the $v=1$ case the variables are
 independent.
 
 \clearpage
-\subsection{Fitting conditional extreme value mixture models (CEVMMs) ---a worked example}\label{sec:worked_example}
+\subsection{Fitting conditional extreme value mixture models --- a worked example}\label{sec:worked_example}
 
 We begin with a worked example of how to fit CEVMMs
 to asymmetric logistic data.
-
-%\subsubsection{Worked example: modelling $\prob(X_{t+1} \leq z | X_{t} = x)$}
-
 First, we generate data from~\eqref{eq:3dimasslogmarkovprocess}. To avoid
 the need to generate copious amounts of data, we produce 100 independent
 realizations of the Markov process, each of length 30, crucially conditioning on $X_{0} > q
@@ -932,7 +789,7 @@ realizations of the Markov process, each of length 30, crucially conditioning on
 several extreme values. Let $X^j$ be the $j$th chain, then we form the datasets
 $\D' = \{(X^j_{t},X_{t+1}^j) | j=1,\ldots,100, t=0,\ldots,28\}$,
 and $\D = \{(x,y)\in \D' | x > u\}$, where $u=3\approx F_{\text{Laplace}}^{-1}(0.975)$.
-The size of $\D$ is order 460. Figure~\ref{fig:worked_example_data} shows the data generated, with $\D'$ on the
+The size of $\D$ is 460. Figure~\ref{fig:worked_example_data} shows the data generated, with $\D'$ on the
 left and $\D$ on the right. The parameters used were
 $\theta_0=\theta_1=\theta_2=0.1$, $\theta_{01}=\theta_{02}=\theta_{012}=0.3$
 and $v_{01}=v_{02}=v_{012}=0.5$.
@@ -940,53 +797,45 @@ and $v_{01}=v_{02}=v_{012}=0.5$.
   \centering
   \includegraphics[scale=0.7]{../ht-em/figures/worked_example_data.pdf}
   \caption{Data used for the worked example, in Laplace margins. The threshold
-    $u$ is shown as a grey  on the left plot.
+    $u$ is shown as a dashed grey line on the left plot.
 }\label{fig:worked_example_data}
 \end{figure}
 
-For fitting, we use the Normal approximations as
+For fitting, we use the normal approximations as
 in~\eqref{eq:ht_mix_fitting_step}, and pretend that the normalizing
-functions are unknown (the latter is both pedagogical and important if we wish
-to fit these models to general data). In other words, we are fitting
+functions are unknown. The latter is both pedagogical and important if we wish
+to fit these models to general data. In other words, we are fitting
 $\theta=(\pi,\alpha_1,\alpha_2,\beta_1,\beta_2,\mu_1,\mu_2,\sigma_1,\sigma_2)$
-in the model:
-
+in the model
 \[
   \prob\left(X_{t+1}\leq z\middle| X_{t} = x\right)
   =  \pi \Phi\left(\frac{z - \alpha_1 x}{x^{\beta_1}};\mu_1,\sigma_1^2\right)
   +  (1-\pi) \Phi\left(\frac{z - \alpha_2 x}{x^{\beta_2}};\mu_2,\sigma_2^2\right).
 \]
-
-Note that we are making an assumption that each data point is independent and identically distributed.
-We use the EM algorithm~\ref{appendix:htnormalem} to fit the parameters in this model, though the parameter space is slightly awkward because of the constraints:
-
+Note that we are making an assumption that each data point is i.i.d..
+We use the EM algorithm~\ref{appendix:htnormalem} to fit the parameters in this model. The parameter space is slightly awkward because of the constraints
 \begin{equation}\label{eq:constraints_k_2}
-  \begin{split}
   0 \leq \pi \leq 1,\, -1 \leq \alpha_1\leq\alpha_1 \leq 1,\,
-  0 \leq \beta_1,\beta_2 \leq 1,\, 0 < \sigma_1,\sigma_2\\
-  \end{split}
+  0 \leq \beta_1,\beta_2 \leq 1,\, 0 < \sigma_1,\sigma_2.
 \end{equation}
-
 The reason for constraints on $\pi$ and $\sigma$ should be clear.
 The bounds on the $\alpha$'s and $\beta$'s are from~\cite{keef2013estimation},
 but we impose $\alpha_1\geq\alpha_2$ to ensure identifiability as in~\cite{tendijck2021modeling}.
 Numerically it is helpful to perform parameter transformations to allow
 us to work over $\reals^9$, unconstrained. The following transformations
-are proposed:
-
+are proposed,
 \begin{equation}\label{eq:htconstr}
   \begin{split}
-  \pi_k' &= \text{logit}(\pi_k),\,\pi_k = \text{sigmoid}(\pi_k')\\
-  \beta_k' &= \text{logit}(\beta_k),\,\beta_k = \text{sigmoid}(\beta_k')\\
-  \sigma_k' &= \log(\sigma_k),\,\sigma_k = \exp(\sigma_k')\\
-  \alpha_1' &= \text{logit}\left(\frac{\alpha_1 + 1}{2}\right),\,\alpha_1 = 2\text{sigmoid}(\alpha_1') - 1\\
+  \pi_k' &= \text{logit}(\pi_k),\,\pi_k = \text{sigmoid}(\pi_k'),\\
+  \beta_k' &= \text{logit}(\beta_k),\,\beta_k = \text{sigmoid}(\beta_k'),\\
+  \sigma_k' &= \log(\sigma_k),\,\sigma_k = \exp(\sigma_k'),\\
+  \alpha_1' &= \text{logit}\left(\frac{\alpha_1 + 1}{2}\right),\,\alpha_1 = 2\text{sigmoid}(\alpha_1') - 1,\\
   \alpha_2' &= \text{logit}\left(\frac{\alpha_2 + 1}{\alpha_1 + 1}\right),\,
   \alpha_2 = (\alpha_1 + 1)\text{sigmoid}(\alpha_2') - 1.\\
 \end{split}
 \end{equation}
-
 In the transformed space, we take advantage of
-an implementation of the L-BFGS algorithm from~\cite{mogensen2018optim} which
+an implementation of the L-BFGS algorithm from~\cite{mogensen2018optim}, which
 allows for fast model fitting.
 
 We fit several models with EM using different (random) initial values
@@ -998,19 +847,15 @@ this is likely because we are optimizing over a highly multimodal landscape.
 According to theory, we are expecting $(\alpha_1,\,\alpha_2,\,\beta_1,\,\beta_2) = (1,0,0,0)$.
 We see some poor fits (e.g.\ seed 1), but thankfully the estimates
 with the highest likelihood are close to the expected values.
-
-
-
 \begin{table}[htp]\centering
   \input{../ht-em/tex/worked_example_table_1.tex} \caption{Parameter estimates
-  and log-likelihoods, to 4 significant figures, obtained when fitting CEVMMs
+  and log-likelihoods, to 2 decimal places, obtained when fitting CEVMMs
 to asymmetric logistic data, with starting values initialized using different
 random seeds.\label{table:ht_worked_example_results_1} }
 \end{table}
 
 We continue our analysis with the parameters that induce the highest
-likelihood, i.e.
-seed 2 (though seeds 2, 6 and 9 yield equivalent results).
+likelihood, i.e.\ seed 2 (though seeds 2, 6 and 9 yield equivalent results).
 We can examine the fit visually in Figures~\ref{fig:worked_example_contour_1} and
 \ref{fig:worked_example_vs_true_1}. Figure~\ref{fig:worked_example_contour_1}
 shows the data used to fit the model, colour coded according to which mixture is
@@ -1022,36 +867,31 @@ is calculated using $F_{1|0}$, by taking the appropriate partial derivative
 (using the chain rule to account for the change to Laplace margins).
 The model seems to have captured the mode corresponding to $\alpha=1$ quite well,
 but performs poorly at the mode corresponding to $\alpha=0$. One reason for
-this is that it is impossible for a Normal distribution to properly approximate
+this is that it is impossible for a normal distribution to properly approximate
 the discontinuity in the gradient of the true conditional density at $0$.
-
 \begin{figure}[htp]
   \centering
   \includegraphics[scale=0.7]{../ht-em/figures/worked_example_contour_fit.pdf}
   \caption{$X_{t+1}$ vs. $X_t$, with each data point colour coded according to
     its more likely mode (a.k.a\ mixture component). The coloured
     lines show contours of the modelled normal mixture density
-    for $X_{t+1}|X_{t}$, when viewed as a function of both $X_{t+1}$ and $X_{t}$.
+    for $X_{t+1}\,|\,X_{t}$, when viewed as a function of both $X_{t+1}$ and $X_{t}$.
 }\label{fig:worked_example_contour_1}
 \end{figure}
-
-
 \begin{figure}[htp]
   \centering
   \includegraphics[scale=0.7]{../ht-em/figures/worked_example_vs_true.pdf}
   \caption{Probability densities of $X_{t+1}|X_{t}=x$ for 4 fixed values of $x$.
     The expected densities are shown in orange, and fitted densities in blue.
-    Think of these plots as vertical cross sections of Figure~\ref{fig:worked_example_contour_1} at
+    These plots can be thought of as vertical cross sections of Figure~\ref{fig:worked_example_contour_1} at
     $X_t=x$.
    }\label{fig:worked_example_vs_true_1}
 \end{figure}
-
 \begin{figure}[htp]
   \centering
   \includegraphics[scale=0.7]{../ht-em/figures/worked_example_check_u.pdf}
-  \caption{Effect of decreasing $u$ from $u=3$ on the fitted parameters.}\label{fig:worked_example_1_check_u}
+  \caption{Effect of decreasing $u$ (down from $u=3$) on the fitted parameters.}\label{fig:worked_example_1_check_u}
 \end{figure}
-
 \begin{figure}[htp]
   \centering
   \includegraphics[scale=0.7]{../ht-em/figures/worked_example_vs_true_ecdf.pdf}
@@ -1062,7 +902,6 @@ the discontinuity in the gradient of the true conditional density at $0$.
    }\label{fig:worked_example_vs_true_1_resids}
 \end{figure}
 \FloatBarrier
-
 It is expedient to reduce $u$ as much as
 possible to reduce the variance of the ECDF estimators. This can be achieved by
 reducing $u$ until the parameters
@@ -1074,18 +913,16 @@ The rationale here is that both $\beta_2$, $\sigma_2$ and $\mu_2$ begin to chang
 for $u$ below $2.9$.
 
 Finally, we sample residuals (this is explained in Appendix~\ref{appendix:nonparametriccevmm},
-here we sample each classification $M=100$ times)
+here we sample each classification $M=500$ times)
 to obtain the semi-parametric model in the form~\eqref{eq:ht_mix_final}.
 Comparing the semi-parametric model fit
 (Figure~\ref{fig:worked_example_vs_true_1_resids}) to the fit of the model with
 normal assumptions (Figure~\ref{fig:worked_example_vs_true_1}), we see that
 moving to use residuals has somewhat remedied the issue of poor fit at the
-lower mode, since an empirical CDF function is more easily able to capture the
-discontinuity in the gradient of the expected density. There is however still a
+lower mode, since an ECDF function is more easily able to capture the
+discontinuity in the gradient of the expected density. There is, however, still a
 bias, perhaps induced by the fact that the theoretical values for $\alpha$ and
 $\beta$ were not obtained exactly during the fitting process.
-
-
 
 From the above, there are a few things that should be taken into account when
 fitting these models. The EM algorithm is sensitive to initial values. Here we
@@ -1093,16 +930,16 @@ fit several models, and selected the one with the highest likelihood, but in
 general this may lead to overfitting. Sensitivity may be further exacerbated if
 we tried to model $K \geq 3$ modes. We work around this issue
 practically later when establishing uncertainty by adding regularization
-(see~\ref{sec:regularization}).
+(see Section~\ref{sec:regularization}).
 Also, the best fitted model in terms of log-likelihood found biased values for
 the normalizing function constants, which possibly induces the slight bias in
 the modes we see in Figure~\ref{fig:worked_example_vs_true_1_resids}. It is
 unclear exactly the cause of this bias, but potential reasons include an
 insufficiently large threshold or overfitting.
 
-Overall, we can expect the EM algorithm to perform reasonable fit,
-with $(\hat\alpha_1,\hat\beta_1)=(0.93,-0.08)$ and
-$(\hat\alpha_2,\hat\beta_2)=(0.00,0.14)$ reasonably close to the
+Overall, we can expect the EM algorithm to perform a reasonable fit,
+since $(\hat\alpha_1,\hat\beta_1)=(0.93,-0.08)$ and
+$(\hat\alpha_2,\hat\beta_2)=(0.00,0.14)$  are reasonably close to the
 true values.
 
 \FloatBarrier
@@ -1112,18 +949,16 @@ The cause of this undesirable `kink' in the true conditional density
 in Figure~\ref{fig:worked_example_vs_true_1} is
 due to definition of the Laplace density. The logistic distribution has
 similar asymptotic properties to the Laplace distribution in the upper and lower tails (both tails are symmetric and are exponential).
-In particular the
-results from ~\eqref{eq:exp_to_lap_res} hold in logistic margins.
-Crucially however, the logistic density is smooth, meaning that the conditionals
-as likely to be more easily modelled by a Gaussian. Repeating the above with the same
+In particular, the
+results from~\eqref{eq:exp_to_lap_res} hold in logistic margins.
+Crucially, however, the logistic density is smooth, meaning that the conditionals
+are more likely to be easily modelled by a mixture of Gaussians. Repeating the above with the same
 data, but with logistic margins and starting with $u=3.65\approx
 F_{\text{logistic}}^{-1}(0.975)$ (for fair comparison), yields
 similar parameter estimates $(\hat\alpha_1,\,\hat\alpha_2,\,\hat\beta_1,\,\hat\beta_2)=(0.93,\,-0.08,\,0.00,\,0.17)$, but more convincing looking
 normal mixture densities (see Figure~\ref{fig:worked_example_logistic_vs_true}),
-especially at the lower mode. However, it's not clear whether moving to logistic
+especially at the lower mode. However, it is not clear whether moving to logistic
 margins actually improves the semi-parametric model, since Figures~\ref{fig:worked_example_logistic_vs_true_resids} and~\ref{fig:worked_example_vs_true_1_resids} are very similar. Notice that the logistic version suffers from the same bias problem as the Laplace version.
-
-
 \begin{figure}[htp]
   \centering
   \includegraphics[scale=0.7]{../ht-em/figures/worked_example_logistic_vs_true.pdf}
@@ -1131,8 +966,6 @@ margins actually improves the semi-parametric model, since Figures~\ref{fig:work
     True densities are shown in orange, and fitted densities in blue.
    }\label{fig:worked_example_logistic_vs_true}
 \end{figure}
-
-
 \begin{figure}[htp]
   \centering
   \includegraphics[scale=0.7]{../ht-em/figures/worked_example_logistic_vs_true_resids.pdf
@@ -1149,82 +982,49 @@ margins actually improves the semi-parametric model, since Figures~\ref{fig:work
 \subsubsection{Simulation study to compare Laplace and logistic margins}\label{sec:lap_vs_log}
 
 To quantitatively examine the effect of the choice of marginal distribution
-on the estimated conditional $\hat F_{1|0}$, we perform a simulation study.
-We compare Laplace and logistic margins. Specifically we generate 100 datasets (each)
+on the estimated conditional $\hat F_{1|0}$, we perform a simulation study
+comparing Laplace and logistic margins. Specifically we generate 100 datasets (each)
 for different combinations of $u$, $v$ and $\theta$, fitting CEVMMs and
 recording integrated absolute and square errors
 with respect to the expected distribution. Mean errors (as well as their standard errors) can then be calculated
-by averaging over the 100 datasets. Formulae are shown in~\eqref{eq:miseandmiae},
-where $\hat F^{(d)}_{1|0}$ is the estimated conditional distribution on the $d$th dataset.
-By varying $x_0$ in~\eqref{eq:miseandmiae}, we test the estimators' efficacy
-at conditional on different values.
-
+by averaging over the 100 datasets. Formulae for these metrics are  given by
 \begin{equation}\label{eq:miseandmiae}
-  \text{MISE}_{x_0}=\frac{1}{100}\sum_{d=1}^{100}\int_\reals \left(F_{1|0}(x;x_0) - \hat F_{1|0}^{(d)}(x;x_0)\right)^2\md x,\ \text{MIAE}_{x_0}=\frac{1}{100}\sum_{d=1}^{100}\int_\reals \left|F_{1|0}(x;x_0) - \hat F_{1|0}^{(d)}(x;x_0)\right|\md x
-  \end{equation}
-
+  \begin{split}
+    \text{MISE}_{x_0}&=\frac{1}{100}\sum_{d=1}^{100}\int_\reals \left(F_{1|0}(x;x_0) - \hat F_{1|0}^{(d)}(x;x_0)\right)^2\md x,\\\text{MIAE}_{x_0}&=\frac{1}{100}\sum_{d=1}^{100}\int_\reals \left|F_{1|0}(x;x_0) - \hat F_{1|0}^{(d)}(x;x_0)\right|\md x,
+\end{split}
+\end{equation}
+where $\hat F^{(d)}_{1|0}$ is the estimated conditional distribution on the $d$th dataset (out of 100),
+and the quantities $\text{MISE}_{x_0}$ and $\text{MIAE}_{x_0}$ also implicitly depend on $v$, $u$ and $\theta$.
+By varying $x_0$ in~\eqref{eq:miseandmiae}, we test the estimators' efficacy
+conditional on different values.
 Varying the parameters $v$ and $\theta$, allows us to test across
 different types of datasets.
 We vary the level of dependence in the data (high, medium and low via $v$: $v=0.3$; $v=0.5$; $v=0.7$,
 and low and high via $\theta$: $\theta_{\{0\},\{1\},\{2\}}=0.1,\theta_{/\{0\},\{1\},\{2\}}=0.3$; $\theta_{/012}=0.3$),
 and also the threshold for computing the dataset $\D$ via $u=F_0^{-1}(q_u)$.
 All models were fit using the same initial parameter estimates.
-
+A subset of the mean integrated square error results, with
+low dependence via $\theta$, are shown in
+Table~\ref{table:lap_vs_log_table1}.
 \begin{table}[htp]
   \centering
   \scalebox{1.0}{
-  %\begin{tabular}{p{18mm}|p{15mm}|p{25mm}|p{25mm}|p{25mm}|p{25mm}|p{25mm}}
   \begin{tabular}{p{18mm}|p{15mm}|p{20mm}|p{20mm}|p{20mm}|p{22mm}|p{22mm}}
   \input{../ht-em/tex/lap_vs_log_e.tex}
 \end{tabular}}\caption{Mean integrated square errors $\pm$ 1 s.d.\ for Laplace and logistic marginals, and for different
 parameter combinations. MISEs are multiplied by 100 for readability.\label{table:lap_vs_log_table1}}
 \end{table}
 
-%\begin{table}[htp]
-  %\centering
-  %\scalebox{1.0}{
-  %%\begin{tabular}{p{18mm}|p{15mm}|p{25mm}|p{25mm}|p{25mm}|p{25mm}|p{25mm}}
-  %\begin{tabular}{p{18mm}|p{15mm}|p{20mm}|p{20mm}|p{20mm}|p{22mm}|p{22mm}}
-  %\input{../ht-em/tex/lap_vs_log_e_miae.tex}
-%\end{tabular}}\caption{Mean integrated square errors $\pm$ 1 s.d.\ for Laplace and logistic marginals, and for different
-%parameter combinations. MISEs are multiplied by 100 for readability.\label{table:lap_vs_log_table1}}
-%\end{table}
-
-A subset of the mean integrated square error (MISE) results, with
-low dependence via $\theta$, are shown in
-Table~\ref{table:lap_vs_log_table1}. The result with the better MISE (Laplace
+The result with the better MISE (Laplace
 vs.\ logistic) for a given $v,q_u = F_0(u)$ is shown in bold. The estimators fit
 in Laplace margins appear to perform better than the estimators fit in logistic
 margins for lower $x_0$, but the performance gap decreases for larger $x_0$.
-The logistic's improvement for higher $x_0$ may be due to the fact that the
-exponential tail approximation improves.
-The mean integrated absolute error (MIAE) results yield similar conclusions.
+The logistic margin's improvement for higher $x_0$ may be due to the fact that the
+exponential tail approximation improves for larger $x_0$.
+The MIAE results yield similar conclusions.
 
-Overall, Laplace margins perform better, having better mean errors $82.5\%$ of the time
+Overall, Laplace margins perform better. They have better mean errors (MISE and MIAE) $82.5\%$ of the time
 (averaged over all variables).
-
-%\FloatBarrier
-%\clearpage
-%\subsubsection{Monte Carlo Simulation Study}\label{sec:sim_study}
-
-
-%\begin{enumerate}[(a)]
-  %\item place Normal assumptions on
-        %$G_k$, i.e. by setting $G_k(z) = \Phi(z;\mu_k,\sigma_k^2)$;
-  %\item convert data to Laplace margins (or asymptotically equivalent tail
-    %exponential margins) and set $a_i(x)=x^{\beta_i}$, $b(x) = {\alpha_i} x$.
-%\end{enumerate}
-%(a) was suggested in the original Heffernan-Tawn paper\cite{heffernan2004conditional}, and (b) was suggested in\cite{keef2013estimation}.
-%An EM algorithm that solves for $\pi_k$, $\alpha_k$, $\beta_k$, $\mu_k$, and $\sigma_k$,
-%$k=1,\ldots,K$ is presented in the \hyperref[appendix:htnormalem]{appendix}.
-
-%For this theoretical model (the asymmetric logistic model), we know
-%its conditional distributions {\it exactly}. This will allow us
-%to quantify the efficacy of the HT mixture model, by comparison between
-%the model and the true distribution.
-
-%TODO simulation study of HT model on $X_{t+1}$ vs. $X_t$, for different thresholds,
-%different amounts of data, different values of $v$, $\theta$ etc.
 
 \subsection{Regularization}\label{sec:regularization}
 
@@ -1239,24 +1039,22 @@ to avoid such instability.
 It is possible to regularize any and every parameter in a model, but it was
 found by experimentation on asymmetric logistic datasets that regularization in
 the $\sigma$ parameters is sufficient to allow for stable model fitting.
-Without this, in the $K=2$ case at least, the fitting
-algorithm sometimes has a tendency to remove one of the mixture components (by sending
-$\pi_1$ or $\pi_2$ to zero, and making the corresponding variance large) or
+Without this, at least in the $K=2$ case, the fitting
+algorithm sometimes has a tendency to either remove one of the mixture components (by sending
+$\pi_1$ or $\pi_2$ to zero, and making the corresponding variance large), or
 alternatively to assign a very small variance to one of the modes. Neither of
 these are desirable when we specifically want 2 mixtures. As such the following
 adjusted log-likelihood is proposed,
-
 \begin{align*}
-  l_\text{regularized}(\theta) = l(\theta) - \gamma \sum_{k=1}^K (\sigma_k^{-2} + \sigma_k^2 / C),\ \gamma > 0,\, C > 0
+  l_\text{regularized}(\theta) = l(\theta) - \gamma \sum_{k=1}^K (\sigma_k^{-2} + \sigma_k^2 / C),\ \gamma > 0,\, C > 0,
 \end{align*}
-
 with the $\sigma_k^{-2}$ term designed to discourage small variances, and the $\sigma_k^2/C$
 term to discourage variances from becoming too large. In our implementation,
 we fixed $C=20$.
 
 We also generally preferred $\gamma=0.05$, motivated
 by a quick experiment. Three datasets were
-generated similar to the one described in~\ref{sec:worked_example}, but each had a
+generated, similar to the one described in Section~\ref{sec:worked_example}, but each has a
 different level of dependence ($v=0.3$, $v=0.5$ or $v=0.7$, but
 $\theta=(0.1,0.1,0.1,0.3,0.3,0.3)$ held constant throughout).
 The threshold was fixed as $u=F_{\text{Laplace}}^{-1}(0.95)$.
@@ -1274,21 +1072,11 @@ datasets described above, for different levels of regularization $\gamma$.\label
 \end{table}
 
 
-
-%In a later section,~\ref{sec:cevvm_uncertainty}, we discuss uncertainty in
-%our CEVMM models.
-
 \subsection{Quantifying error in CEVMM models with bootstrapped confidence
 intervals}\label{sec:cevvm_uncertainty}
 
-% theoretical discussion of uncertainties
-% discussion of the data used in demo
-% discussion of results
-
 We briefly show that it is possible to produce confidence intervals
 for a CEVMM's parameters and its predictions.
-
-
 Due to the constraints on the parameter space for CEVMMs
 (see~\eqref{eq:constraints_k_2} for the constraints in the $K=2$ case),
 we cannot construct asymptotic confidence intervals.
@@ -1296,25 +1084,24 @@ The reason for this is that the usual regularity conditions, sufficient for
 asymptotic normality of maximum likelihood estimates, do not necessarily hold
 --- in particular our estimates may lie on the boundary of the parameter space.
 In order to establish confidence intervals for a CEVMM model we must
-try and quantify sources of error directly. These sources include
+try to quantify sources of error directly. These sources include
 error in the parameter estimates $\theta=(\pi,\alpha,\beta,\mu,\sigma)$;
 error due to the choice of threshold $u$ (is $u$ large enough
     for the asymptotic approximation to be valid but small enough such that
     variance of the model parameters is low?), and error due to false assumptions (e.g.\ the i.i.d.\ assumption not being met).
 
-%Uncertainty due to (1) as in
-%is taken care of by sampling residuals
-%from each of the normal mixtures many times (see Appendix~\ref{appendix:nonparametriccevmm} for the algorithm).
 It is possible to estimate uncertainty due to error in the parameter
 estimates using the bootstrap~\citep{efron1994introduction}.
 It would be difficult to estimate the error due to $u$; it may be possible via
 a combination of the bootstrap and varying $u$, but this is likely to be very
-computationally intensive.
-It may be possible to estimate the uncertainty due to $u$ (by bootstrapping
-datasets and varying $u$, for example) but it would be difficult
-to decouple the effects of (1) from the estimate of the error.
-Estimating error due to a false assumption is incredibly hard,
+computationally intensive, and also it would hard to decouple from
+the estimated error in the parameters.
+Estimating error due to a false assumption is incredibly difficult,
 since if an assumption has been broken it is likely that the model is invalid.
+
+%It may be possible to estimate the uncertainty due to $u$ (by bootstrapping
+%datasets and varying $u$, for example) but it would be difficult
+%to decouple the effects of (1) from the estimate of the error.
 
 As such, we concentrate on only uncertainty due to the model parameters. From a
 high level this means that we run Algorithms~\ref{alg:normalht}
@@ -1334,34 +1121,16 @@ Table~\ref{table:15000_fit} for the fitted parameters, with regularization $\gam
 \begin{table}[htp]
   \centering
     \input{../ht-em/tex/15000_eg_fit.tex}
-\caption{Fitted parameters and log likelihood for CEVMM fit on $\D_1$, $u=F_{\text{Laplace}}^{-1}(0.95)$, $\gamma = 0.05$.\label{table:15000_fit}}
+\caption{Fitted parameters and log-likelihood for a CEVMM fit on $\D_1$, with $u=F_{\text{Laplace}}^{-1}(0.95)$, $\gamma = 0.05$.\label{table:15000_fit}}
 \end{table}
-
-
 
 \begin{figure}[htp]
   \centering
   \includegraphics[scale=0.75]{../ht-em/figures/block_bootstrap_Xs.pdf}
   \caption{The left plot shows a time series of length 15000 generated from
-  the 3 dimensional asymmetric logistic process, placed in Laplace margins; the
+  the 3 dimensional asymmetric logistic process, placed in Laplace margins. The
 grey dashed line is $u$. The right plot shows $\D$.}\label{fig:block_bootstrap_Xs}
 \end{figure}
-
-%Calculating uncertainty due to (1) is straightforward to implement (see algorithm in appendix TODO),
-%but does not capture much of the
-%uncertainty (see Figure~\ref{fig:boot_sampling_residuals_only}; the true distribution
-%does not reliably lie in the confidence region).
-
-
-%\begin{figure}[htp]
-  %\centering
-  %\includegraphics[scale=0.7]{../ht-em/figures/boot-sampling-residuals-only.pdf}
-  %\caption{Estimated distribution of $F_{1|0}(\cdot;F_{0}^{-1}(0.99))$ in red.
-    %The true distribution is in black. 99\% confidence bounds are in blue,
-    %determined only by sampling classifications of the training
-  %data.}\label{fig:boot_sampling_residuals_only}
-%\end{figure}
-
 
 Regarding the bootstrap, we reach in particular for the moving block
 bootstrap~\citep{kunsch1989jackknife}, which can be applied to bootstrap stationary time series.
@@ -1374,7 +1143,7 @@ Repeating this $M$ times yields $M$ bootstrapped series
 $\{\tilde{X}^j_{1:n}\}_{j=1}^M$.
 A CEVMM can then be fit on each of the bootstrapped datasets
 $\tilde{\D}^j := \{(\tilde{X}^j_{t},\tilde{X}^j_{t+1})\,|\,t=1,\ldots,n-1,\tilde{X}^j_{t}>u\}$,
-which allows us to construct empirical confidence intervals on any estimator
+which allows us to construct empirical confidence intervals on estimators
 of interest.
 The `moving block' aspect
 comes from the fact that the set to be sampled from is $\{X_{1:B},X_{2:B+1},\ldots,X_{n-B+1:n}\}$.
@@ -1383,21 +1152,12 @@ which blocks are formed is stationary; since otherwise the resulting bootstrappe
 series will not be comparable to the original series and any statistical analysis
 will therefore be meaningless.
 
-
-%We show an example on a realistic dataset generated from the asymmetric
-%logistic model. We generate a single time series of length 15000
-%using~\eqref{eq:3dimasslogmarkovprocess}, and after moving it to Laplace
-%margins, we set $u = F_{\text{Laplace}}^{-1}(0.95)$; see
-%Figure~\ref{fig:block_bootstrap_Xs} for a visual representation of the data.
-%The other parameters were $\theta = (0.1,0.1,0.1,0.3,0.3,0.3)$, $v = (0.5,0.5,0.5)$.
-
-
 \FloatBarrier
 Figure~\ref{fig:block_bootstrap_params} shows empirical distributions of fitted
 parameters, generated using the moving
 block bootstrap. It is promising that these empirical distributions corroborate
 with the theoretically expected values of $\alpha_1,\,\alpha_2,\,\beta_1$ and
-$\beta_2$. We do see however that the distribution for $\alpha_2$ is slightly biased,
+$\beta_2$. We see, however, that the distribution for $\alpha_2$ is slightly biased,
 and that the bootstrap distribution for $\alpha_1$ places a small amount of mass near $0.8$.
 
 \begin{figure}[htp]
@@ -1410,201 +1170,48 @@ on the full dataset are shown in red.}\label{fig:block_bootstrap_params}
 \FloatBarrier
 Now that we have bootstrapped $M=1000$ models, we
 can establish, as an example,
-confidence intervals for $\hat F_{1|0}(\cdot;x_0)$. These have been calculated,
-they appears to work reasonably well for $x_0\leq F_0^{-1}(0.99)$
+confidence intervals for $\hat F_{1|0}(\cdot;x_0)$. These have been calculated
+and appear to work reasonably well for $x_0\leq F_0^{-1}(0.99)$
 (Figure~\ref{fig:block_bootstrap_Fs_final}), even if
 the confidence regions are perhaps a bit narrow for 99\% confidence.
-Notice that there is no guarantee that model fit on the full data actually lies
-in the confidence interval, which could be problematic. Perhaps if this happens,
+Notice that there is no guarantee that estimators derived from the model fit on the full data will actually lie
+in the bootstrapped confidence interval. This may be problematic. If this happens,
 it suggests that the chosen $u$ is not suitable, or the model assumptions do not hold.
 As we take $x_0$ larger in $\hat F_{1|0}(\cdot;x_0)$, we begin to
 see a bias (Figure~\ref{fig:block_bootstrap_Fs_final_bad_large}).
 The bias is more obvious when $x_0$ is large because the modes of the
 distribution are further apart. Any error in the probability
-assigned to each mode leads to a discrepancy in where the CDF flatlines.
+assigned to each mode leads to a discrepancy where the CDF flatlines.
 
-From what we've seen, these bootstrap confidence intervals for $\hat F_{1|0}$
+From what we have seen, these bootstrap confidence intervals for $\hat F_{1|0}$
 should be taken lightly. This is not a huge surprise, since we have not shown
 any underlying theory to support their use. However, they may still be of
 practical use, in particular when conditioning on smaller values of $x_0$.
 Having said this, the bootstrap distributions for the model parameters seem
 more convincing. It would be interesting to implement a Bayesian CEVMM model
 and compare associated confidence regions to these bootstrap confidence intervals,
-but this is future work.
+but this is an area for future work.
 
 \begin{figure}[htp]
   \centering
   \includegraphics[scale=0.75]{../ht-em/figures/block_bootstrap_Fs_final2.pdf}
   \caption{Estimates for $F_{1|0}(x;x_0)$, for two large $x_0$.
     The true distribution is shown in black, and the distribution estimated from the full data shown in red.
-    99\% confidence intervals, generated using $M=1000$ bootstrap samples, are shown in blue.}
+    The 99\% confidence intervals, generated using $M=1000$ bootstrap samples, are shown in blue.}
     \label{fig:block_bootstrap_Fs_final}
 \end{figure}
 
 \begin{figure}[htp]
   \centering
   \includegraphics[scale=0.75]{../ht-em/figures/block_bootstrap_Fs_final_bad_large2.pdf}
-  \caption{Estimate for $F_{1|0}(x;F_{0}^{-1}(0.9999)$.
+  \caption{Estimate for $F_{1|0}(x;F_{0}^{-1}(0.9999))$.
     The true distribution is shown in black, and the distribution estimated from the full data shown in red.
-    99\% confidence intervals, generated with $M=1000$, are shown in blue.}
+    The 99\% confidence intervals, generated using $M=1000$ bootstrap samples, are shown in blue.}
     \label{fig:block_bootstrap_Fs_final_bad_large}
 \end{figure}
 
+\FloatBarrier
 
-
-
-
-%\clearpage
-%\subsection{Bernstein Polynomials}
-
-%Normal assumptions on the $G_k$ has been shown to be effective, however they have
-%no theoretical motivation. If we could take $G_k$ to be more flexible, then
-%it may be possible to apply the HT model more generally.
-
-%One attractive family of distributions, in terms of its flexibility,
-%are Bernstein polynomial mixtures. They have been explored extensively (e.g.\ \cite{petrone1999random}),
-%but we consider them in following form:
-
-%$$
-%\begin{aligned}
-  %G(z) &= \sum_{j=1}^{K_B} w_j B(z; j, K_B - j + 1)\\
-  %\sum_{j=1}^{K_B} w_j &= 1\\
-  %z &\in [0,1]\\
-%\end{aligned}
-%$$
-
-%where $B(z,a,b)$ are Beta distribution functions and $K_B$ is fixed
-%\footnote{Note that $G$ is necessarily a distribution function here
-%because $B(\cdot,a,b)$ is a distribution for all $a,b>0$ and
-%the weights $w_j$ sum to 1.}. Fitting the mixture weights $w_j$ is seen as an
-%effective method for performing nonparametric density
-%estimation --- there is an efficient EM
-%algorithm for fitting the mixture weights that converges to
-%their MLEs\cite{guan2016efficient}. It is even possible to perform
-%multivariate density estimation\cite{wang2019bernstein}.
-
-%\subsubsection{Mapping from $\reals$ to $[0,1]$}
-
-%Unfortunately, it is not possible to straightforwardly write
-%the $G$'s in~\eqref{eq:modalhtapprox} as Bernstein mixtures, because
-%the support of $G$ in general should be $\reals$ but the Beta distribution
-%(and hence Bernstein mixtures) are only supported on $[0,1]$.
-%One solution is to use $G(z) = \sum_{j=1}^{K_B} w_j B(T(z); j, K_B - j + 1)$
-%where $T:\reals \ra [0,1]$ is some suitable monotonically function
-%\footnote{
-  %Fortunately a large number of such $T$'s are readily available, since any probability
-  %distribution function supported on $\real$ is monotonic, and maps to $[0,1]$.
-  %Examples include $T_\text{Logistic}(z) = (1+\exp(-z))^{-1}$ and
-  %$T_{\text{Normal}}(z) = \Phi(z)$ and $T_{\text{Cauchy}}(z) =
-  %\pi^{-1}\arctan(z) + 0.5$.
-%}. Under this framework,~\eqref{eq:modalhtapprox} becomes
-
-%\begin{equation}\label{eq:htbernstein}
-%\begin{split}
-%\prob\left(X_{t+1}\leq y\middle| X_{t} = x\right)
-%= & \pi_1 \sum_{j=1}^{K^1_B} w^1_j B\left(T^1\left(\frac{y - b_1(x)}{a_1(x)}\right); j, K^1_B - j + 1\right)\\
-%+ &\pi_2 \sum_{j=1}^{K^2_B} w^2_j B\left(T^2\left(\frac{y - b_2(x)}{a_2(x)}\right); j, K_B^2 - j + 1\right)\\
-%+ &\dots \\
-%+ &\pi_K \sum_{j=1}^{K^K_B} w^K_j B\left(T^K\left(\frac{y - b_K(x)}{a_K(x)}\right); j, K_B^K - j + 1\right)\\
-%\text{for large }x,&
-%\text{where } \pi,w^1,\ldots,w^K \text{ are probability vectors.}
-%\end{split}
-%\end{equation}
-
-%The choice of $T$ transformation is critical --- in the ideal case, it spreads
-%data evenly over $[0,1]$. If for example $T(z) = (1+\exp(-z))^{-1}$ is chosen
-%regardless of the data, Bernstein mixtures can act as very poor density
-%estimators. See Figure~\ref{fig:bernstein_normal_demo}; $\mu=0$ performs well
-%because the sigmoid function $(1+\exp(-z))^{-1}$ spreads out standard normal
-%data nicely over $[0,1]$, but $\mu=5$ performs badly because $N(5,1)$ data is
-%`squashed' to the upper end of $[0,1]$.
-
-
-%\begin{figure}[htp]
-  %\centering
-  %\includegraphics[scale=0.75]{../ht-bernstein/figures/bernstein_normal_T_graph.pdf}
-  %\caption{Bernstein mixtures fit to 3 ($\mu=0,2.5,5$) datasets,
-  %$\{X_{i}\}_{i=1}^{500}\sim_{\text{i.i.d.}}N(\mu,1)$. The histograms of the datasets are shown in orange, with the fitted Bernstein mixture density estimators (after transforming back  from $[0,1]$ to $\reals$, for easier comparison) in blue.
-%The number of Bernstein mixtures used for each fitting was 20 (i.e.\ $K_B=20$).}\label{fig:bernstein_normal_demo}
-%\end{figure}
-
-%In~\eqref{eq:htbernstein}, the functions $a_i$ and $b_i$ are unknown
-%and therefore it is very difficult to choose $T^k$ that perform well, because
-%the range of the data is not even known.
-
-
-%\section{Fitting Heffernan-Tawn 6-mixture models to asymmetric logistic data}
-
-%So far we tried to model the tails of process~\eqref{eq:3dimasslogmarkovprocess},
-%but only looking at the 1st order dependence. We can additionally use the HT
-%framework to model the distribution of $X_{t+2} | X_{t+1},X_{t}$, where either
-%one of $X_{t+1}$ or $X_{t}$ are extreme. By `$X$ extreme', as before, it is meant
-%that $X > u$ for some large threshold $u$. This leads to the following $2^3$ cases
-
-%\begin{enumerate}[(1)]
-  %\item $X_{t+2},X_{t+1},X_{t}$ are all extreme,
-  %\item $X_{t+2},X_{t+1}$ are extreme, but $X_{t}$ is not extreme,
-  %\item $X_{t+2},X_{t}$ are extreme, but $X_{t+1}$ is not extreme,
-  %\item $X_{t+1},X_{t}$ are extreme, but $X_{t+2}$ is not extreme,
-  %\item $X_{t+1}$ is extreme, but $X_{t+2},X_{t}$ are not extreme,
-  %\item $X_{t}$ is extreme, but $X_{t+2},X_{t+1}$ are not extreme,
-  %\item $X_{t+2}$ is extreme, and $X_{t+1}$ and $X_{t}$ are not extreme,
-  %\item None of $X_{t+2},X_{t+1},X_{t}$ are extreme.
-%\end{enumerate}
-
-%Cases (7) and (8) are ignored since they contain no extremes and therefore
-%it does not make sense to analyse them using extreme value methods. We are left
-%with 6 cases.
-%This partitioning of the random variables into extreme and non-extreme regions
-%suggests the following Heffernan-Tawn inspired mixture model:
-
-%\begin{equation}\label{eq:6assloghtmodel}
-  %\begin{split}
-    %&\prob\left(X_{t+2}\leq x\middle| X_{t+1}=x_{t+1},X_{t} = x_t, \max(X_{t+1},X_{t}) > u\right)=\\
-     %& \pi_1 G_1\left((x - b_1(x_{t+1},x_{t}))/a_1(x_{t+1},x_t)\right)\\
-    %+& \pi_2 G_2\left((x - b_2(x_{t+1}))/a_2(x_{t+1})\right)\\
-    %+& \pi_3 G_3\left((x - b_3(x_{t}))/a_3(x_t)\right)\\
-    %+& \pi_4 G_4(x)\\
-    %+& \pi_5 G_5(x)\\
-    %+& \pi_6 G_6(x),\\
-  %\end{split}
-%\end{equation}
-
-%where the mixture components $G_k$ for $k=1,\ldots,6$ correspond to cases above.
-%The intuition for this model is that $G_1,\ldots,G_3$ capture possibilities
-%where the process remains in the tails, and $G_4,\ldots,G_6$ capture the possibilities
-%where we revert back to the `main body' of the process.
-
-
-%If similar assumptions are to be made as before (i.e. Normal assumptions on
-%$G_k$; $a_k(x) = x^{\beta_k}$ and $b(x) = {\alpha_k} x$), then it is easy to
-%fit components $k=2,\ldots,6$ using a version of Algorithm~\ref{alg:normalht}
-%(with slight modifications to force $\alpha_4,\alpha_5,\alpha_6=0$ and
-%$\beta_4,\beta_5,\beta_6=1$).
-
-%Unfortunately, the 1st mixture component, $G_1$, provides a complication.
-%While the functions $a_1:\mathbb{R}^2\rightarrow \mathbb{R}$ and $b_1:\mathbb{R}^2\rightarrow \mathbb{R}$
-%can be found analytically for the asymmetric logistic process, a general
-%multivariate 3-dimensional probability distribution has no nice form
-%(TODO what are the specifics here? + provide citation to Ioannis' paper).
-%It is considered later how to deal with this, but one solution is to
-%fit separately a model
-
-%\begin{equation}
-  %\begin{split}
-    %\prob\left(X_{t+2}\leq x\middle| X_{t+1}=x_{t+1},X_{t} = x_t, \min(X_{t+1},X_{t}) > u\right) \approx  H(x;x_{t+1},x_{t})
-  %\end{split}
-%\end{equation}
-
-%on a reduced set of data ($\mathcal{D} = \{(X_{t+2},X_{t+1},X_{t}) | X_{t+2}>u,X_{t+1}>u,X_{t}>u\}$),
-%treat\\
-%$G_1\left((x - b_1(x_{t+1},x_{t}))/a_1(x_{t+1},x_t)\right) = H(x;x_{t+1},x_t)$ as fixed,
-%and then fit the remaining parameters in~\eqref{eq:6assloghtmodel}.
-
-%TODO fit~\eqref{eq:6assloghtmodel}, both with the analytic form for $a_1$, $b_1$,
-%and additionally with the non-parametric
-
-\clearpage
 \section{Application to Electricity Imbalance Prices}
 
 We apply the CEVMM methodology discussed above to electricity imbalance prices.
@@ -1621,16 +1228,16 @@ residuals and analyse the results.
 
 It is in the interest of electricity suppliers and generators to strike
 contracts with each other in order for them to supply electricity to their
-customers, and to profit from electricity generation, respectively. In the UK,
+customers, and to profit from electricity generation. In the UK,
 there exist markets to trade these electricity contracts~\citep{liu2022evolution}
 and in fact organisations that are neither suppliers nor generators can
 participate~\citep{https://www.elexon.co.uk/about/bsc-explained/}.
 
 Contracts will usually stipulate that the parties involved either consume or
-produce a certain volume of electricity. In reality parties will likely fail to
-meet the contract requirements --- for example, a supplier incorrectly predicted the demand of its customers,
-or the gales blowing on the eastern coast of Scotland suddenly turned into
-light breezes. The volume of electricity that doesn't balance in these
+produce a certain volume of electricity. In reality, parties will likely fail to
+meet the contract requirements --- for example, a supplier may incorrectly predict the demand of its customers,
+or the gales blowing on the eastern coast of Scotland may suddenly turn into
+light breezes. The volume of electricity that does not balance in these
 contracts, the imbalance, must be bought or sold on the central
 electricity grid at a certain price. This price, typically
 measured in £ per MWh, is determined half-hourly by
@@ -1644,31 +1251,25 @@ possible for imbalance prices to be negative.
 Imbalance price data is not available to download directly. However, it is
 possible to obtain it via Elexon's API. There is a Python library
 (\url{https://github.com/MichaelKavanagh/elexon}) to assist with this.
-Imbalance volume data is also collected for each period; this is
-the total imbalance over all contracts in a particular period, and therefore
-the volume of electricity traded at the imbalance price. The
-scripts used
-to obtain this data can be found on
-\href{https://github.com/lippirk/edi-diss/blob/main/elexon-scrape}{GitHub}.
-
+Imbalance volume data is also collected for each period --- this is
+the total imbalance over all contracts in a particular period.
 
 \subsection{Cleaning imbalance price data}\label{sec:cleaning_imbalance}
 
 A graphical representation of the raw 2021 data can be found in
-Figure~\ref{fig:whole_year_imbalance_price}. 2021 had 365 days, and we have 48
+Figure~\ref{fig:whole_year_imbalance_price}. The year 2021 had 365 days, and we have 48
 periods per 24 hours, so we expect to work with an imbalance price time series of
 length 17520.
 
-Unfortunately price data is missing from 2021-06-23 for periods 34 and 37
+Unfortunately, price data is missing from 2021-06-23 for periods 34 and 37
 (there were no other missing data). Mean imputation was used to impute these
-missing values (the mean prices calculated using data the same month, June, and the same
-periods). While multiple imputation is preferable to mean imputation, it is not
-expected that these values will actually affect the final CEVMM model, since
+missing values (the mean prices were calculated using data from the same month, June, and from the same
+periods). While multiple imputation is generally preferable to mean imputation, it is not
+expected that these values will actually affect the final CEVMM model since
 from Figure~\ref{fig:whole_year_imbalance_price} we see that it is unlikely June will have
 extreme values in the upper tail.
 
-We later model the imbalance prices in order to extract residuals (see
-Figure~\ref{fig:stepwise_output_lm} for the final model used). In particular we
+We later model the imbalance prices in order to extract residuals (see~\eqref{eq:select_imb_model} for the final model used). In particular we
 use $\code{period}\in\{1,\ldots,48\}$ as a covariate, which is complicated by
 the UK switching time zones to/from UTC from/to BST for daylight savings. The
 upshot of this is that 2021-03-28 has 2 fewer periods and 2021-10-31 has 2 more
@@ -1678,11 +1279,11 @@ dropped. Imbalance volumes are imputed in a similar way in March.
 
 
 To avoid massive outliers in the imbalance price, we perform a log transformation on the
-price: $\code{log_price'}:= \log(\code{price} + a)$ (where \code{price} denotes the imbalance price).
+price, namely $\code{log_price'}:= \log(\code{price} + a)$, where \code{price} denotes the imbalance price.
 The adjustment term $a$ in the argument to the logarithm is to ensure that the argument is positive.
 Though we are fitting models with 2021 data, for the purposes of compatibility with
 2022 data (e.g.\ for prediction), we select $a=91=-\min\lceil\code{price}\rceil$,
-where the $\min$ is taken over all periods between 2021-01-02 and 2022-08-01
+where the $\min$ is taken over all periods between 2021-01-01 and 2022-08-01.
  Finally, we standardize the volumes and prices
 to have mean 0 and standard deviation 1.
 
@@ -1690,23 +1291,22 @@ to have mean 0 and standard deviation 1.
 \begin{figure}[htp]
   \centering
   \includegraphics[scale=0.75]{../elexon/figures/imbalance_whole_year.pdf}
-  \caption{Imbalance prices, and Imbalance prices on a log scale for
+  \caption{Imbalance prices, and imbalance prices on a log scale, for
   2021. Months labelled correspond to the first period of the month.}\label{fig:whole_year_imbalance_price}
 \end{figure}
 
 
 
-\subsection{Seasonalizing Imbalance Prices}
+\subsection{Seasonalizing imbalance prices}
 
 Imbalance prices are seasonal. This is because
 demand for electricity fluctuates throughout the day and throughout the
-year. In order for i.i.d. assumptions to be valid when fitting CEVMM models,
+year. In order for i.i.d.\ assumptions to be valid when fitting CEVMM models,
 we first fit a model on the imbalance prices in the hope of recovering
 stationary residuals; we call this step {\it deseasonalization}.
 We will then fit a CEVMM model on these residuals.
 We begin with a simple linear model with the factors \code{weekday}, \code{month}
-and \code{period}:
-
+and \code{period}, given by
 \begin{equation}\label{eq:seasonal_imbalance_price_factor}
   \begin{split}
     \code{log_price} &= \beta_0 + \beta_1 \cdot \code{weekday} + \beta_2 \cdot \code{month} + \beta_3 \cdot \code{period} + \eps\\
@@ -1720,39 +1320,37 @@ and \code{period}:
     \code{log_price'} &= \log(\code{price} +a).\\
   \end{split}
 \end{equation}
-
-
-
-The log and standarization transforms are as discussed
-in~\ref{sec:cleaning_imbalance}.
+The log and standardization transforms are as discussed
+in Section~\ref{sec:cleaning_imbalance}.
  A deseasonalization can then be obtained with $y :=
 \code{log_price} - \widehat{\code{log_price}}$, of which a plot can be
 found in Figure~\ref{fig:lprice_res_simple}. It is clear that large values of
 $y$ correspond with high imbalance prices, and similarly small values
 of $y$ correspond with low imbalance prices.
+\clearpage
+
 
 
 One issue, at least visually, with the residuals in
-Figure~\ref{fig:lprice_res_simple} is uptick towards the end of the
+Figure~\ref{fig:lprice_res_simple} is the uptick towards the end of the
 series, and then the sudden jump down. Some experimentation finds
-that autoregressive terms help capture more variance; in particular,
-these terms:
+that autoregressive terms help capture more variance. In particular,
+we consider the following covariates
 
 \begin{enumerate}[(a)]
   \item \code{last_log_price1} and \code{last_log_price2},
     the \code{log_price} of the previous and second to last period respectively;
-  \item \code{last_log_quantity1} and \code{last_log_quantity2},
+  \item \code{last_quantity1} and \code{last_quantity2},
     the imbalance quantities of the previous and second to last
     period respectively;
   \item \code{yday_log_price} and \code{yday_quantity}, the \code{log_price}
     and imbalance quantity of the same period yesterday.
 \end{enumerate}
 
-Stepwise selection was used (with the AIC criterion) to find exactly which terms to include,
+Stepwise selection was used (with the AIC criterion) to find which terms to include,
 with the selected model shown in~\eqref{eq:select_imb_model}.
 Note that by introducing \code{yday_quantity} and \code{yday_log_price},
 we have no residuals for 2021-01-01, meaning that there are 17472 residuals in total.
-
 \begin{equation}\label{eq:select_imb_model}
   \code{log_price} = \begin{bmatrix}
     \code{yday_log_price} \\
@@ -1766,15 +1364,10 @@ we have no residuals for 2021-01-01, meaning that there are 17472 residuals in t
   \code{last_log_price2}\cdot\code{last_quantity2}
 \end{bmatrix}^T\beta + \eps,\,\eps~\sim N(0,\sigma^2)
 \end{equation}
-%Step:  AIC=-18861.04
-%log_price ~ yday_log_price + last_log_price1 + last_quantity1 +
-    %last_log_price2 + last_quantity2 + period + month + weekday +
-    %last_log_price2:last_quantity2
-
-Visually, the residuals for model~\ref{eq:select_imb_model} look more
+Visually, the residuals for model~\eqref{eq:select_imb_model} look more
 convincingly stationary
 than the model defined by~\eqref{eq:seasonal_imbalance_price_factor}
-(Figure \ref{fig:lprice_res_stepwise} vs Figure \ref{fig:lprice_res_simple}).
+(Figure~\ref{fig:lprice_res_stepwise} vs.\ Figure \ref{fig:lprice_res_simple}).
 Note that in neither model is the normal assumption reasonable given the huge spikes seen
 in the figures, but this is the behaviour we aim to capture later with the CEVMM model.
 
@@ -1791,46 +1384,30 @@ correspond to the first period of the month.}\label{fig:lprice_res_simple}
 \begin{figure}[htp]
   \centering
   \includegraphics[scale=0.60]{../elexon/figures/y_lm_final.pdf}
-  \caption{Plot of $y :=\code{log_price} - \widehat{\code{log_price}}$ vs.
-    period for model~\ref{eq:select_imb_model}, chosen using stepwise selection. Months labelled
+  \caption{Plot of $y :=\code{log_price} - \widehat{\code{log_price}}$ vs.\ period for model~\eqref{eq:select_imb_model}, chosen using stepwise selection. Months labelled
 correspond to the first period of the month.}\label{fig:lprice_res_stepwise}
 \end{figure}
 \FloatBarrier
 
 To quantitatively check that $y$
 actually resembles {\it something} like a deseasonalization, we run a KPSS test
- to check for level stationarity:
+ to check for level stationarity.
 
 \verbatiminput{../elexon/kpss-result/lm-final.txt}
 
 Model~\eqref{eq:select_imb_model} is not perfect as
-there isn't overwhelming evidence for stationarity of its residuals.
+there is not overwhelming evidence for stationarity of its residuals.
 However, there is also no evidence against stationarity by the KPSS test above.
-Since we are mostly interested in applying a CEVMM model in this context, we consider
+Since we are mostly interested in applying a CEVMM model, we consider
 this model sufficient.
 
 As a final note on deseasonalization, we point out that there is one clear
 disadvantage of moving from the simpler
 model~\eqref{eq:seasonal_imbalance_price_factor}
-to~\ref{fig:lprice_res_stepwise}. The residuals of the latter model no longer
+to~\eqref{eq:select_imb_model}. The residuals of the latter model no longer
 have a simple interpretation in terms of the price imbalance
 because the residuals are now coupled to the imbalance volume, as well as
-the imbalance price. This unfortunately reduces interpretability.
-
-
-%We also check the autocorrelation
-%an ACF plot: see Figure~\ref{fig:acf_residuals}. While the autocorrelations
-%are statistically significant, they are at least small.
-
-%\begin{figure}[htp]
-  %\centering
-  %\includegraphics[scale=0.75]{../elexon/figures/acf_residuals.pdf}
-  %\caption{ACF plot of $y :=\code{log_price} - \widehat{\code{log_price}}$.}\label{fig:acf_residuals}
-%\end{figure}
-
-
-
-
+the imbalance price. This, unfortunately, reduces interpretability.
 
 \subsection{Fitting the CEVMM model}
 
@@ -1857,8 +1434,6 @@ there are $K=2$ modes.
   \caption{Plots of $y_t$ vs.\ $y_{t-1}$ (Laplace margins). $(a)$ shows all the data,
     with the dotted line denoting $y_{t-1}=u=2.8$; (b) focuses on the region $y_{t-1}>u$.}\label{fig:imb_first_order_tail}
 \end{figure}
-%As in~\ref{sec:cevvm_uncertainty}, we select our threshold for exceedances
-%to be $u=F_{\text{Laplace}}^{-1}(0.95)$.
 
 We first set the regularization parameter to $\gamma=0.05>0$ as
 $\gamma = 0$ leads to overfitting ($\gamma = 0.05$ in particular was chosen
@@ -1866,18 +1441,18 @@ because it was found to have worked well for asymmetric logistic data).
 See Figure~\ref{fig:seed_18} and the corresponding
 parameter estimates in Table~\ref{table:seed_18} as an example of this overfitting.
 We see that the data has not been
-clustered naturally, and the Table shows that the fitted variances
+clustered naturally, and the table shows that the fitted variances
 are perhaps artificially small.
 
 \begin{table}[htp]\centering
-  \input{../elexon/tex/seed_18.tex} \caption{Best CEVMM fit of 30 random initial values, with no regularization.\label{table:seed_18} }
+  \input{../elexon/tex/seed_18.tex} \caption{Best CEVMM fit of 30 random initial values, with no regularization and $u=F_{\text{Laplace}}^{-1}(0.95)$.\label{table:seed_18} }
 \end{table}
 
 \begin{figure}[htp]
   \centering
   \includegraphics[scale=0.75]{../elexon/figures/seed_18.pdf}
   \caption{Best CEVMM fit of 30 different models each fit with random initial values.
-    $\gamma=0$, $u=F_{\text{Laplace}}^{-1}(0.95)$. Data points are colour coded according to which normal mixture they most
+    Here, $\gamma=0$ and $u=F_{\text{Laplace}}^{-1}(0.95)$. Data points are colour coded according to which normal mixture they most
 likely belong to.}\label{fig:seed_18}
 \end{figure}
 
@@ -1885,63 +1460,29 @@ likely belong to.}\label{fig:seed_18}
 It is not obvious which value should be chosen for the threshold $u$.
 We proceed by fitting CEVMMs for several $u\in[1.6,3.9]\approx
 F_{\text{Laplace}}^{-1}([1.6,3.9])$. Figure~\ref{fig:imb_param_vals_changing_u}
-shows how the fitted values change with $u$; we select $u=2.8$
-since for $u<2.8$, $\alpha_1$ seems to steadily decrease and $\mu_2$ steadily increase.
-
-
+shows how the fitted values change with $u$ --- we select $u=2.8$
+since for $u<2.8$ we see $\alpha_1$ steadily decreasing and $\mu_2$ steadily increasing.
 
 \begin{figure}[htp]
   \centering
   \includegraphics[scale=0.75]{../elexon/figures/imb_param_vals_changing_u.pdf}
-  \caption{Effect of threshold $u$ on the fitted parameters, $\gamma=0.5$.}\label{fig:imb_param_vals_changing_u}
+  \caption{Effect of threshold $u$ on the fitted parameters, with $\gamma=0.05$.}\label{fig:imb_param_vals_changing_u}
 \end{figure}
-
 
 Figure~\ref{fig:imb_contour_with_reg05} and Table~\ref{table:imb_reg05} show
 the fitted model with the selected parameters. We see a much more natural separation
 of the modes, and most data points are being clustered to the mode that one might expect.
 
-There is a question of whether data points with $y_{t+1} \approx 0$ ought to be
-assigned to the upper mode or lower mode --- binary classification may be too
-reductionist here. It is proposed to sample several empirical CDFs when forming
-the model~\eqref{eq:ht_mix_final}, by sampling the classifications of each data
-point, as in Section~\ref{sec:cevvm_uncertainty}.
-
-
-
-%We are now in the position to fit a CEVMM. We begin with $K=2$ and initially
-%with no regularization. The lack of regularization leads to overfitting in the
-%upper mode -- see Figure~\ref{fig:seed_18}
-
-
-%Figure~\ref{fig:imb_contour_with_reg05} shows a more promising fit, though
-%there are some problems. Firstly, there is a data point classified
-%seemingly incorrectly (see the green data point in the top left of the Figure).
-%This is because the data point, $(y_t,y_{t+1})=(2.44, 6.77)$, is far away from
-%either
-%of the two Gaussian modes, meaning it has a very small probability of belonging
-%to either; but the mode with the highest variance ($\hat\sigma_2$ in
-%Table~\ref{table:imb_reg05}) `wins'; in other words, it is an outlier.
-%Secondly, the green cluster is smaller than we might expect --- it appears
-%to contain fewer points than the red. This can
-%be explain by the fitted parameter values in Table~\ref{table:imb_reg05}, and noting
-%that the proportion of data points assigned to the positive dependence cluster (in red) is 0.52. The discrepancy in $\hat\pi = 0.43$ and 0.52 is due to the way
-%$\hat\pi$ is updated in~\ref{alg:normalht} --- it takes
-%into account the likelihoods of each data point and doesn't simply look at the
-%binary classifications.
-
+%There is a question of whether data points with $y_{t+1} \approx 0$ ought to be
+%assigned to the upper mode or lower mode --- binary classification may be too
+%reductionist here. It is proposed to sample several ECDFs when forming
+%the model~\eqref{eq:ht_mix_final}, by sampling the classifications of each data
+%point, as in Section~\ref{sec:cevvm_uncertainty}.
 
 \begin{table}[htp] \centering
   \input{../elexon/tex/imb_reg05.tex} \caption{Fitted parameter values and log
   likelihood for $K=2$, $\gamma=0.05$, $u=2.8$.\label{table:imb_reg05}}
 \end{table}
-
-%Figure~\ref{fig:imb_first_order_k_eq_3}, we fit Heffernan-Tawn models for $K=2$
-%and $K=3$, and show contours for the models\footnote{
-  %These contours should be taken liberally, as it is usual practice to
-  %discard the contours once the model has been fit.
-%}
-
 
 \begin{figure}[htp]
   \centering
@@ -1953,7 +1494,7 @@ point, as in Section~\ref{sec:cevvm_uncertainty}.
 
 \subsection{Uncertainty in model parameters}
 
-Using the moving block bootstrap once again, as in~\ref{sec:cevvm_uncertainty}, we can
+Using the moving block bootstrap once again, as in Section~\ref{sec:cevvm_uncertainty}, we can
 estimate uncertainty in the fitted parameters. Figure~\ref{fig:parameter_uncert_k2}
 shows estimated distributions for $M=1000$ bootstrap replications.
 A block size $B=48$ was used for convenience, as 48 divides the total length of the
@@ -1970,7 +1511,7 @@ the parameters to the boundary, and sometimes they are not included by the boots
 \begin{figure}[htp]
   \centering
   \includegraphics[scale=0.7]{../elexon/figures/parameter_uncert_k2.pdf}
-  \caption{Histograms of fitted values $\alpha_1$, $\alpha_2$, $\beta_1$ and $\beta_2$ on $M=1000$ moving-block-bootstraped time series with block size $B=48$ .The parameter values fitted
+  \caption{Histograms of fitted values $\alpha_1$, $\alpha_2$, $\beta_1$ and $\beta_2$ on $M=1000$ moving-block-bootstrapped time series with block size $B=48$. The parameter values fitted
 on the full dataset are shown in red.}\label{fig:parameter_uncert_k2}
 \end{figure}
 
@@ -1991,36 +1532,12 @@ is a good test case because the data is out-of-sample for the CEVMM model,
 and additionally the true residuals are known, so it is possible to assess the
 performance of our predictions.
 
-
-%by performing one-step-ahead residual prediction with January 2022 imbalance price residuals.
-
-
-%\begin{enumerate}[1]
-  %%\item Sample $
-  %%\item Sample sets of residuals $M_1$ times to form $M_1$
-    %%CEVMM models.
-  %%\item For each of the $M_1$ models, account for classification uncertainty by sampling $M_2$ sets
-    %%of classifications.
-  %\item Draw a sample of $y_{t+1}$ from a random selection of one of the $M_1$
-    %models, conditional on $y_t = y$. Repeat $M_2$ times to get $M_2$
-    %samples.
-  %\item Use all $M_2$ samples to form an estimated distribution for the next price's residual $y_{t+1}$.
-  %%\item Finally, use model~\ref{fig:stepwise_output_lm} to convert the residual $y_{\text{next}}$ into a price estimate.
-%\end{enumerate}
-
-
-%This
-%is a good test case because the (1) the data is out of sample,
-%and (2) the true residuals are known, so it is possible to assess the
-%performance of our predictions.
-
-
 Imbalance price residuals for January 2022 (after the usual transformation to Laplace
 margins) are shown in Figure~\ref{fig:jan22_resids} (of which there are
 $48\cdot31 = 1488$), and the results of sampling predictions are
 shown in Figure~\ref{fig:jan22_hists_22} for the first 16 exceedances (out of 45).
-The `true' residual is shown in red, and a point estimator for $y_{t+1}$ from an ARIMA model
-(fit the residuals) is shown in green for comparison.
+%The `true' residual is shown in red, and a point estimator for $y_{t+1}$ from an ARIMA model
+%(fit the residuals) is shown in green for comparison.
 
 
 We can see that when predicting one step ahead, the CEVMM assigns
@@ -2031,7 +1548,7 @@ sometimes the lower mode is a good predictor (e.g.\ row 2, column 2),
 and sometimes neither are good estimators (e.g.\ row 3, column 4).
 As such, the CEVMM model is not going to be useful for
 constructing point estimates, but more for managing risk.
-The ARIMA predictions are plotted merely out of interested, but it illustrates
+The ARIMA predictions are plotted merely out of interest, but it illustrates
 that more standard time series model tend not to predict such large residuals
 as the CEVMM model, even when they are likely to happen.
 The estimate from the ARIMA model tends to be more conservative than the CEVMM model.
@@ -2039,25 +1556,23 @@ The estimate from the ARIMA model tends to be more conservative than the CEVMM m
 \begin{figure}[htp]
   \centering
   \includegraphics[scale=0.70]{../elexon/figures/resids_jan_22.pdf}
-  \caption{Imbalance price residuals for January 2022, with threshold $u=2.8$ shown by the black dashed line.}\label{fig:jan22_resids}
+  \caption{Imbalance price residuals for January 2022, with threshold $u=2.8$ shown by the grey dashed line.}\label{fig:jan22_resids}
 \end{figure}
 
 
 
 We repeat the above for $K=3$; the model used has parameters detailed in
 Table~\ref{table:k_3_fits}. The results are shown in
-Figure~\ref{fig:jan22_hists_k3}. Based on AIC, we would pick the $K=3$ model over
-the $K=2$ model, but we check their predictive powers. The proxy we use for
-their predictive capabilities is likelihood of the data, where the likelihood
+Figure~\ref{fig:jan22_hists_k3}. We compare the two values of $K$ by looking at
+their predictive capabilities.
+The proxy we use is likelihood of the data, where the likelihood
 is determined by a Gaussian kernel density estimator; that is, we fit density
-estimator onto the simulated residuals of $y_{t+1}|y_{t} > 2.8$, for each of
+estimator on the simulated residuals of $y_{t+1}|y_{t}$, for each of
 the 45 exceedances in January 2022, and calculate likelihoods of the actual
-values. This allows us to compare the distributions of the likelihoods,
-as seen in Figure~\ref{fig:k2_k3_violin}. The distribution of likelihoods
+values. We compare the distributions of these likelihoods in Figure~\ref{fig:k2_k3_violin}. The distribution of likelihoods
 looks similar, but $K=2$ has a
 slightly higher mean, and also has a higher `best likelihood'.
-Overall, there is no reason to prefer $K=3$, so one might prefer $K=2$
-for reasons of parsimony.
+Overall, there is no reason to prefer $K=3$.
 
 
 \begin{figure}[htp]
@@ -2065,15 +1580,15 @@ for reasons of parsimony.
   \includegraphics[scale=0.5]{../elexon/figures/ytp1_giv_yt_jan_22_k2_full_pred_final.pdf}
   \caption{($K=2$) Histograms for simulated values of $y_{t+1}|y_{t}$ (here $y_{d,p}:=y_{48d - 1 + p}$ denotes the residual on day $d$ during period $p$ in January
     2022).
-The red line shows the true value of $y_{t+1}$, and the green line shows the
-value estimated by an ARIMA model.}\label{fig:jan22_hists_22}
+The red line shows the actualized value of $y_{t+1}$, and the green line shows the
+value estimated by an ARIMA model (fit to the to the entire series of residuals).}\label{fig:jan22_hists_22}
 \end{figure}
 
 \FloatBarrier
 
 \begin{table}[htbp] \centering
   \input{../elexon/tex/k_3_fit.tex}
-  \caption{Fitted parameter values and log likelihood for $K=3$, $\gamma = 0.05$, $u=2.8$.\label{table:k_3_fits}}
+  \caption{Fitted parameter values and log-likelihood for $K=3$, $\gamma = 0.05$, $u=2.8$.\label{table:k_3_fits}}
 \end{table}
 
 
@@ -2081,8 +1596,8 @@ value estimated by an ARIMA model.}\label{fig:jan22_hists_22}
 \begin{figure}[htp]
   \centering
   \includegraphics[scale=0.70]{../elexon/figures/2vs3_violin.pdf}
-  \caption{Violin and box plots for likelihoods of the `true' residuals according to
-  the estimated predictive distributions for the CEVMM models for $K=2$ and $K=3$ (higher is `better').}\label{fig:k2_k3_violin}
+  \caption{Violin and box plots for likelihoods of the actualized residuals according to
+  the estimated predictive distributions for the CEVMM models for $K=2$ and $K=3$.}\label{fig:k2_k3_violin}
 \end{figure}
 
 
@@ -2091,7 +1606,7 @@ value estimated by an ARIMA model.}\label{fig:jan22_hists_22}
   \includegraphics[scale=0.5]{../elexon/figures/ytp1_giv_yt_jan_22_Keq3.pdf}
   \caption{($K=3$) Histograms for simulated values of $y_{t+1}|y_{t}$ (here $y_{d,p}:=y_{48d - 1 + p}$ denotes the residual on day $d$ during period $p$ in January
     2022).
-The red line shows the true value of $y_{t+1}$.}\label{fig:jan22_hists_k3}
+The red line shows the actualized value of $y_{t+1}$.}\label{fig:jan22_hists_k3}
 \end{figure}
 
 
@@ -2113,12 +1628,10 @@ The red line shows the true value of $y_{t+1}$.}\label{fig:jan22_hists_k3}
 \subsection{Conversion back to the original price scale}
 
 While we have fitted the CEVMM on imbalance price residuals, this only provides
-utility to electricity suppliers and producers if it is possible frame the
-results with the residuals in GBP. In terms of one-step-ahead price prediction,
+utility to electricity suppliers and producers if it is possible to frame the
+results using GBP. In terms of one-step-ahead price prediction,
 this can be done by first moving residuals from unit Laplace scale to their
 original scale, and then applying~\eqref{eq:gbp_trans}.
-
-
   \begin{equation}\label{eq:gbp_trans}
   \begin{split}
     \code{log_price}_{t+1} &= \widehat{\code{log_price}}_{t+1} + y_{t+1}\\
@@ -2127,7 +1640,6 @@ original scale, and then applying~\eqref{eq:gbp_trans}.
     (\widehat{\code{log_price}}_{t+1} + y_{t+1}) + \text{mean}(\code{log_price'})\right) - a
    \end{split}
 \end{equation}
-
 
 \begin{figure}[htp]
   \centering
@@ -2145,21 +1657,21 @@ This reverse transform was applied to the predictive distributions of
 Figure~\ref{fig:jan22_hists_22}, and the results can be found in
 Figure~\ref{fig:gbp_trans_hists}. The results are underwhelming, most notably because the
 predictive distributions suggest that high prices, around £500 are likely, but we
-never see these actualized in the Figure. This may be because the model
+never see these actualized in the figure. This may be because the model
 ~\eqref{eq:select_imb_model} used to deseasonalize the imbalance prices is too
 simplistic. It is also likely that a more sophisticated model is required to
-perform accurate price prediction; one suggestion is to include use CEVMM
-as part of an ensemble of larger models.
+perform accurate price prediction; one suggestion is to use CEVMM models
+as part of a larger ensemble of models.
 
 \FloatBarrier
-\chapter{Conclusions}
+\chapter{Conclusions}\label{sec:conclusion}
 
 % what we have seen
 We have developed and implemented the CEVMM model based on the EM algorithm,
 and used it to characterize bivariate data. Models of this type have been
 applied in the past, but the application here to stationary time series is
 believed to be novel. Simulated data from a 3-dimensional asymmetric logistic
-model was used to illustrate some methods for fitting CEVMM models, assessing
+model was used to illustrate methods for fitting CEVMM models, assessing
 uncertainty, and to validate the implementation. CEVMMs were
 easily able to fit parameters that align closely with theoretical parameter values,
 and we saw that the fitted distributions also aligned reasonably well, though
@@ -2177,12 +1689,12 @@ when making decisions.
 CEVMMs however have the ability to shine in this domain.
 By taking advantage of the theory of extremes that has been
 developed over several decades, CEVMMs have the potential
-to play a crucial role in managing this risk of the extremes.
+to play a crucial role in managing this risk of extremes.
 In their presented form, the CEVMM models discussed can be applied to any
 bivariate dataset, under the mild assumption~\eqref{eq:htassump},
 and also the assumption that exceedances are i.i.d.. The latter
 is stringent in general, but is not unreasonable if we consider
-datasets of consecutive pairs of realizations from stationary time series It is
+datasets of consecutive pairs of realizations from stationary time series. It is
 therefore expected
 that CEVMM models will be broadly applicable, especially in fields
 where stationary time series are prevalent.
@@ -2194,7 +1706,7 @@ which has not yet been investigated.
 Additionally, whilst the methods proposed are relatively easy
 to use, CEVMMs may rarely apply because they
 are conditional on extreme values. This is not a problem directly,
-but it makes model validation difficult as any test data is by definition
+but it makes model validation difficult as any test data is, by definition,
 rare.
 
 %Regarding the details of fitting CEVMMs, a Bayesian approach was not
@@ -2208,7 +1720,7 @@ rare.
 There are several avenues for future work. Firstly, if CEVMMs were to be used
 in tandem with other methods for wholistically modelling,
 it is not obvious how this ought to be done. However, there is potential here.
-For example we saw that sometimes the CEVMM model was able to perform imbalance
+For example, we saw that sometimes the CEVMM model was able to perform imbalance
 residual prediction better than others; perhaps in the context of a larger
 system, it would be possible to identify the times when the signal from the
 CEVMM model is more reliable. Secondly, we have only demonstrated how CEVMMs
@@ -2229,156 +1741,22 @@ tolerances here.
 
 
 
-%the entries have to be in the file literature.bib
-%\thispagestyle{plain}
 \bibliography{literature}
-
-%\clearpage
-
 
 \appendix
 \chapter{Appendices}
-%\addcontentsline{toc}{chapter}{Appendices}
-
-%\section{3-dimensional asymmetric logistic model}
-%\label{appendix:3dimasslog}
-
-%Here we present derivations of the conditional distributions $F_{1|0}$,
-%$F_{2|1,0}$, where $F=\exp(-V)$ is as in~\eqref{eq:3dimasslog} (with the
-%assumptions of $\theta_{01}=\theta_{12}$ and $v_{01}=v_{12}$ for stationarity
-%of~\eqref{eq:3dimasslogmarkovprocess}).
-
-%Some preliminary results are
-
-%\begin{equation}
-  %\begin{split}
-    %-x_0^{2}\frac{\partial V}{\partial x_0} &= \theta_0\\
-  %&+ \theta_{01}x_0^{1-1/v_{01}}\left(x_0^{-1/v_{01}} + x_1^{-1/v_{01}}\right)^{v_{01}-1}\\
-  %&+ \theta_{02}x_0^{1-1/v_{02}}\left(x_0^{-1/v_{02}} + x_2^{-1/v_{02}}\right)^{v_{02}-1}\\
-  %&+ \theta_{012}x_0^{1-1/v_{012}}\left(x_0^{-1/v_{012}}+x_1^{-1/v_{012}} + x_2^{-1/v_{012}}\right)^{v_{012}-1}\\
-  %\end{split}
-%\end{equation}
-
-%\begin{equation}
-  %\begin{split}
-    %-x_1^{2}\frac{\partial V}{\partial x_1} &= \theta_1\\
-    %&+ \theta_{01}x_1^{1-1/v_{01}}\left(x_0^{-1/v_{01}} + x_1^{-1/v_{01}}\right)^{v_{01}-1}\\
-  %&+ \theta_{01}x_1^{1-1/v_{02}}\left(x_1^{-1/v_{01}} + x_2^{-1/v_{01}}\right)^{v_{01}-1}\\
-  %&+ \theta_{012}x_1^{1-1/v_{012}}\left(x_0^{-1/v_{012}}+x_1^{-1/v_{012}} + x_2^{-1/v_{012}}\right)^{v_{012}-1}\\
-  %\end{split}
-%\end{equation}
-
-%\begin{equation}
-  %\begin{split}
-    %\frac{\partial^2 V}{\partial x_0 \partial x_1} &=
-    %\theta_{01}v_{01}^{-1}x_0^{-1-1/v_{01}}x_1^{-1-1/v_{01}}\left(x_0^{-1/v_{01}} + x_1^{-1/v_{01}}\right)^{v_{01}-2}\\
-     %&+ \theta_{012}v_{012}^{-1} x_0^{-1-1/v_{012}} x_1^{-1-1/v_{012}}\left(x_0^{-1/v_{012}}+x_1^{-1/v_{012}} + x_2^{-1/v_{012}}\right)^{v_{012}-2}\\
-  %\end{split}
-%\end{equation}
-
-%\[
-  %\begin{aligned}
-    %F_{1|0}(x;x_0) &=& \prob(X_1 \leq x|X_0 = x_0) =
-    %\frac{(\partial_{x_0} F)|_{x_0=x_0,x_1=x,x_2=\infty}}
-    %{(\partial_{x_0} F)|_{x_0=x_0,x_1=\infty,x_2=\infty}}\\
-                   %&=& -x_0^2 (F\partial_{x_0} V)|_{x_0=x_0,x_1=x,x_2=\infty}\\
-                   %&=& \exp(1/x_0 - V(x_0, x_1, \infty))\{\theta_0 + \theta_{02} + \theta_{01}x_{0}^{1-1/v_{01}}(x_0^{-1/v_{01}} + x_1^{-1/v_{01}})^{v_{01}-1}\\
-                   %&&+\theta_{012}x_{0}^{1-1/v_{012}}(x_0^{-1/v_{012}} + x_1^{-1/v_{012}})^{v_{012}-1}\}
-  %\end{aligned}
-%\]
-
-%and
-
-%\[
-  %\begin{aligned}
-    %F_{2|1,0}(x;x_1,x_0) &=& \prob(X_2 \leq x|X_1=x_1,X_0 = x_0) =
-    %\frac{(\partial^2_{x_0,x_1} F)|_{x_0=x_0,x_1=x_1,x_2=x}}
-    %{(\partial^2_{x_0,x_1} F)|_{x_0=x_0,x_1=x_1,x_2=\infty}}\\
-   %&=&\frac{\left[(\partial_{x_0} V) (\partial_{x_1} V)-\partial^2_{x_0,x_1}V\right] F|_{x_0=x_0,x_1=x_1,x_2=x}}
-    %{\left[(\partial_{x_0} V) (\partial_{x_1} V)-\partial^2_{x_0,x_1}V\right] F|_{x_0=x_0,x_1=x_1,x_2=\infty}}\\
-  %\end{aligned}
-%\]
-
-%TODO $F_{2|1,0}(x;x_1,x_0)$
 
 
-%\clearpage
-%\section{Appendix: EM algorithm for fitting a simple 2-mixture model}
-%\label{appendix:simpleem}
-
-%Assume the following model, where all of $G
-
-%\[
-    %\p\left(Y\leq y | X =x,right) =
-    %\pi G_1\left(\frac{y - b_1(x)}{a_1(x)}\right)
-  %+ (1-\pi)G_2\left(\frac{y - b_2(x)}{a_2(x)}\right).
-%\]
-
-%Since everything but $\pi$ is known, we can equivalently work with
-%the following (making the known quantities implicit):
-
-%\[
-  %\begin{aligned}
-    %\p\left(Y\leq y | X =x\right) &=
-    %\pi H_1(y,x)\\
-  %&+ (1-\pi)H_2(y,x),
-  %\end{aligned}
-%\]
-
-
-%where $H_i$ are known probability distribution functions in $y$.
-%Write $h_i(\cdot,x)$ for the associated PDFs, then the likelihood
-%of the data $\D=\{(x_i, y_i)\}_{i=1}^n$ (where $x_i > u$, for some
-%ideally large threshold $u$) is
-
-%\[
-%L(\pi) = \prod_{i=1}^n \left(\pi h_1(y_i, x_i) + (1-\pi) h_2(y_i,x_i)\right).
-%\]
-
-%Additionally, let $Z\in\{0,1\}^n$, be a vector of indicator variables, with
-%$Z_i=1$ if the $i$th observation is drawn from the first mixture component.
-%The corresponding conditional likelihood and log-likelihoods are:
-
-%\[
-  %\begin{aligned}
-    %L(\pi|Z) &= \prod_{i=1}^n \left[\pi h_1(y_i, x_i)\right]^{Z_i}
-  %\left[(1-\pi)h_2(y_i,x_i)\right]^{1-Z_i}\\
-    %l(\pi|Z)=\log L(\pi|Z) &= \sum_{i=1}^n \left\{Z_i\log\pi + (1-Z_i)\log(1-\pi) + Z_i\log h_1(y_i,x_i) + (1-Z_i)\log h_2(y_i,x_i)\right\}
-%\end{aligned}
-%\]
-
-%An efficient EM
-%algorithm for fitting $\pi$ is as follows.
-
-%\begin{algorithm}
-  %\caption{EM algorithm for fitting a simple 2-mixture model\label{alg:simpalg}}
-%\begin{algorithmic}
-%\State Choose some initial value for $\pi$, $\pi^{(0)}$ (e.g. 0.5).
-%\State $t \gets 0$
-%\While{$\pi^{(t)}$ not converged}
-  %\For{$i \in 1,\ldots, n$}
-  %\State $\tilde\pi_i  \gets \frac{\pi^{(t)} h_1(y_i, x_i)}{\pi^{(t)} h_1(y_i, x_i) + (1-\pi^{(t)})h_2(y_i, x_i)}$
-  %\EndFor
-  %\State $\pi^{(t+1)} \gets \frac{1}{n}\sum_{i=1}^n \tilde\pi_i$
-  %\State $t \gets t + 1$
-%\EndWhile
-%\State \Return $\hat\pi = \pi^{(t)}$
-%\end{algorithmic}
-%\end{algorithm}
-
-%\clearpage
 \section{EM algorithm for fitting conditional extremal $K$-mixture models with the normal assumption}
 \label{appendix:htnormalem}
 
 Let $\Phi(\cdot\,;\,\mu,\sigma^2)$ and $\phi(\cdot\,;\,\mu,\sigma^2)$
 be the normal CDF and PDF respectively.
 We are concerned with fitting the model
-
 \begin{equation}\label{eq:htemnormalass}
     \p\left(Y\leq y | X =x\right) = \sum_{k=1}^K
-    \pi_k \Phi_k\left(\frac{y - \alpha_1 x}{x^{\beta_k}};\mu_k,\sigma_k^2\right)
+    \pi_k \Phi_k\left(\frac{y - \alpha_1 x}{x^{\beta_k}};\mu_k,\sigma_k^2\right).
 \end{equation}
-
 We fit on a dataset
 $\mathcal{D}=\{(x_i,y_i)\}_{i=1}^n$ where $x_i > u$ for some preferably large
 $u$ ($u>0$ is strictly necessary for us to be able to evaluate fractional
@@ -2386,9 +1764,6 @@ powers of $x_i$), and it is assumed that elements of $\D$ are i.i.d.\ draws.
 An EM
 algorithm for finding $\pi$, $\alpha$, $\beta$, $\mu$, and $\sigma$ is
 given in Algorithm~\ref{alg:normalht}.
-An implementation can be found on \href{https://github.com/lippirk/edi-diss/blob/main/ht-em/normal.jl}{GitHub}.
-
-
 \begin{algorithm}
 \caption{EM algorithm for fitting conditional extremal $K$-mixture models with the normal assumption\label{alg:normalht}}
 \begin{algorithmic}
@@ -2415,10 +1790,9 @@ An implementation can be found on \href{https://github.com/lippirk/edi-diss/blob
 \end{algorithmic}
 \end{algorithm}
 
-
 The method for calculating the $\argmax$ in Algorithm~\ref{alg:normalht} is
 described in Section~\ref{sec:worked_example}. In particular, it is worth
-emphasising that the reparameterization~\ref{eq:htconstr} is used (it is easily
+emphasising that the reparameterization~\eqref{eq:htconstr} is used (it is easily
 generalized to the general $K\in\mathbb{N}$ case). We also clarify what we mean
 by convergence in Algorithm~\ref{alg:normalht}. We say $x^{(t)}$ has converged
 if
