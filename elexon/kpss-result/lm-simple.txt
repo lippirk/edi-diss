@@ -1,0 +1,6 @@
+
+	KPSS Test for Level Stationarity
+
+data:  resids
+KPSS Level = 0.081027, Truncation lag parameter = 14, p-value = 0.1
+

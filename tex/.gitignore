@@ -1,0 +1,15 @@
+*.lof
+*.log
+*.lot
+*.toc
+*.aux
+*.blg
+*.bbl
+*.pdf
+thesis.out
+*.loa
+_minted-thesis/
+_pyg_cache/
+cache/
+thesis.synctex.gz
+
